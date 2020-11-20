@@ -21,22 +21,23 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 // arrays to hold device addresses
- DeviceAddress kolThermometer, boyThermometer;
+//  DeviceAddress kolThermometer, boyThermometer;
 
 // Assign address manually. The addresses below will need to be changed
 // to valid device addresses on your bus. Device address can be retrieved
 // by using either oneWire.search(deviceAddress) or individually via
 // sensors.getAddress(deviceAddress, index) 28 64 E1 12 5F 14 01 84; 28 F5 75 C9 2F 14 01 D0
-//DeviceAddress kolThermometer = { 0x28, 0x64, 0xE1, 0x12, 0x5F, 0x14, 0x01, 0x84 };
-//DeviceAddress boyThermometer   = { 0x28, 0xF5, 0x75, 0xC9, 0x2F, 0x14, 0x01, 0xD0 };
+DeviceAddress kolThermometer = { 0x28, 0x64, 0xE1, 0x12, 0x5F, 0x14, 0x01, 0x84 };
+DeviceAddress boyThermometer   = { 0x28, 0xF5, 0x75, 0xC9, 0x2F, 0x14, 0x01, 0xD0 };
+
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
-char auth[] = "R_8Reojduuwwsdw3xe-5FodBVxZzJU60";
+// char auth[] = "R_8Reojduuwwsdw3xe-5FodBVxZzJU60";
 
-// Your WiFi credentials.
-// Set password to "" for open networks.
-char ssid[] = "UniNet";
-char pass[] = "owen2014";
+// // Your WiFi credentials.
+// // Set password to "" for open networks.
+// char ssid[] = "UniNet";
+// char pass[] = "owen2014";
 
 BlynkTimer timer;
 // This function will be called every time Slider Widget
