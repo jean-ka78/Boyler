@@ -46,7 +46,8 @@ void ConnectBlynk()
         Serial.print(".");
         Serial.print(WiFi.status());
         count++;
-        if (count >= 5){break;Serial.println("WiFi not connected");}
+        if (count >= 5){
+          break;Serial.println("WiFi not connected");}
       }
     }
   /*  Дисконект - для справки 
