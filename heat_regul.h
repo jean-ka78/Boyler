@@ -32,3 +32,13 @@ bool logic(bool heat_on, float Temp_boy, float Temp_kol, float temp_u)
     }
     return nasos;
 }
+
+
+void regul()
+{
+bool relle;
+relle = logic(heat,printTemperature(boyThermometer),printTemperature(kolThermometer),temp_u);
+digitalWrite(relay,relle);
+
+
+}
