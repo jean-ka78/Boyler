@@ -47,119 +47,22 @@ BlynkTimer timer;
 float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
 bool heat;
-const int relay = 18;
+const int relay = 21;
 const int PIN_LOW = 19;
-const int PIN_HIGH = 23;
+const int PIN_HIGH = 18;
 
 
 #include "heat_regul.h"
 #include "obogrev.h"
 
-// void adrr()
-// {
-//   byte i;
-//   byte present = 0;
-//   byte type_s;
-//   byte data[12];
-//   byte addr[8];
-//   float celsius, fahrenheit;
-  
-//   if ( !oneWire.search(addr)) {
-//     Pr.println("No more addresses.");
-//     Pr.println();
-//     oneWire.reset_search();
-//     delay(250);
-//     return;
-//   }
-  
-//   Pr.print("ROM =");
-//   for( i = 0; i < 8; i++) {
-//     Pr.write(' ');
-//     Pr.print(addr[i], HEX);
-//   }
-
-//   if (OneWire::crc8(addr, 7) != addr[7]) {
-//       Pr.println("CRC is not valid!");
-//       return;
-//   }
-//   Pr.println();
- 
-//   // the first ROM byte indicates which chip
-//   switch (addr[0]) {
-//     case 0x10:
-//       Pr.println("  Chip = DS18S20");  // or old DS1820
-//       type_s = 1;
-//       break;
-//     case 0x28:
-//       Pr.println("  Chip = DS18B20");
-//       type_s = 0;
-//       break;
-//     case 0x22:
-//       Pr.println("  Chip = DS1822");
-//       type_s = 0;
-//       break;
-//     default:
-//       Pr.println("Device is not a DS18x20 family device.");
-//       return;
-//   } 
-
-//   oneWire.reset();
-//   oneWire.select(addr);
-//   oneWire.write(0x44, 1);        // start conversion, with parasite power on at the end
-  
-//   delay(1000);     // maybe 750ms is enough, maybe not
-//   // we might do a ds.depower() here, but the reset will take care of it.
-  
-//   present = oneWire.reset();
-//   oneWire.select(addr);    
-//   oneWire.write(0xBE);         // Read Scratchpad
-
-//   Pr.print("  Data = ");
-//   Pr.print(present, HEX);
-//   Pr.print(" ");
-//   for ( i = 0; i < 9; i++) {           // we need 9 bytes
-//     data[i] = oneWire.read();
-//     Pr.print(data[i], HEX);
-//     Pr.print(" ");
-//   }
-//   Pr.print(" CRC=");
-//   Pr.print(OneWire::crc8(data, 8), HEX);
-//   Pr.println();
-
-//   // Convert the data to actual temperature
-//   // because the result is a 16 bit signed integer, it should
-//   // be stored to an "int16_t" type, which is always 16 bits
-//   // even when compiled on a 32 bit processor.
-//   int16_t raw = (data[1] << 8) | data[0];
-//   if (type_s) {
-//     raw = raw << 3; // 9 bit resolution default
-//     if (data[7] == 0x10) {
-//       // "count remain" gives full 12 bit resolution
-//       raw = (raw & 0xFFF0) + 12 - data[6];
-//     }
-//   } else {
-//     byte cfg = (data[4] & 0x60);
-//     // at lower res, the low bits are undefined, so let's zero them
-//     if (cfg == 0x00) raw = raw & ~7;  // 9 bit resolution, 93.75 ms
-//     else if (cfg == 0x20) raw = raw & ~3; // 10 bit res, 187.5 ms
-//     else if (cfg == 0x40) raw = raw & ~1; // 11 bit res, 375 ms
-//     //// default is 12 bit resolution, 750 ms conversion time
-//   }
-//   celsius = (float)raw / 16.0;
-//   fahrenheit = celsius * 1.8 + 32.0;
-//   Pr.print("  Temperature = ");
-//   Pr.print(celsius);
-//   Pr.print(" Celsius, ");
-//   Pr.print(fahrenheit);
-//   Pr.println(" Fahrenheit");
-
-// }
 
 void setup()
 { 
    // Debug console
   Serial.begin(9600);
   pinMode(relay, OUTPUT);
+  pinMode(PIN_LOW, OUTPUT);
+  pinMode(PIN_HIGH, OUTPUT);
   sensors.begin();
 
   sensors.setResolution(kolThermometer, TEMPERATURE_PRECISION);
