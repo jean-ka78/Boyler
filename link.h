@@ -57,7 +57,8 @@ void ConnectBlynk()
   
   //*******************************************************
   // Запускаем Blynk
-
+timer.disable(IDt_reconnectBlynk); // Выключаем таймер
+  
   if (WiFi.status() == WL_CONNECTED)// Если нет WiFi, то не коннектимся
     {
           // CONNECT TO BLYNK
@@ -74,7 +75,8 @@ void ConnectBlynk()
   // До бесконечности будем оставаться в цикле while
   // пока не установим связь с сервером
   //  while (Blynk.connect() == false) {}
-  
+  timer.enable(IDt_reconnectBlynk); // Включаем таймер
+  timer.restartTimer(IDt_reconnectBlynk); // Перезапускаем таймер
 }//ConnectBlynk()
 
 

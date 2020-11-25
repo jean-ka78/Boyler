@@ -8,14 +8,23 @@
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+BlynkTimer timer;
+// Первое ли это подключение к Серверу
+  bool isFestConnection=true;
 
+// ID для таймеров Blynk
+  int IDt_reconnectBlynk; // ID таймера для перезагрузки
+
+/////////////////////////////////////////
+//   База переменных для подключения   //
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "link.h"
 #define ONE_WIRE_BUS 23
 #define TEMPERATURE_PRECISION 12
-WidgetLED led1(V6);
+WidgetLED led1(V6), led2(V9), led3(V10);
 WidgetTerminal Pr(V8);
+
 OneWire oneWire(ONE_WIRE_BUS);
 
 // Pass our oneWire reference to Dallas Temperature.
@@ -41,17 +50,20 @@ DeviceAddress batThermometer   = { 0x28, 0xAA, 0xF0, 0x86, 0x13, 0x13, 0x02, 0x5
 // char ssid[] = "UniNet";
 // char pass[] = "owen2014";
 
-BlynkTimer timer;
+
 // This function will be called every time Slider Widget
 // in Blynk app writes values to the Virtual Pin 1
 float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
 bool heat;
 const int relay = 21;
-const int PIN_LOW = 19;
-const int PIN_HIGH = 18;
-
-
+int PIN_LOW = 19;
+int PIN_HIGH = 18;
+uint32_t tmr;
+bool flag = LOW;
+int period;
+int period1;
+long rssi;
 #include "heat_regul.h"
 #include "obogrev.h"
 
@@ -71,9 +83,9 @@ void setup()
   timer.setInterval(1000, temp_in);
   timer.setInterval(1000, temp_out);
   timer.setInterval(500, temp_bat);
-  timer.setInterval(10000, reconnectBlynk);
+  IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  // timer.setInterval(1000, adrr);
+  timer.setInterval(10, kran_otop);
     reconnectBlynk(); 
 //   Blynk.begin(auth, ssid, pass);
   // You can also specify server:
@@ -82,7 +94,9 @@ void setup()
  ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
   //ArduinoOTA.setPassword((const char *)"0000"); // Задаем пароль доступа для удаленной прошивки
   ArduinoOTA.begin(); 
-
+ digitalWrite(PIN_LOW,HIGH);
+ digitalWrite(PIN_HIGH,HIGH);
+ digitalWrite(relay,HIGH);
 }
 
 
@@ -107,6 +121,23 @@ BLYNK_WRITE(V4) {
 
 BLYNK_WRITE(V5) {
   heat = param.asInt();
+  //digitalWrite(ledPin, ledState);
+//   Serial.print(temp_u);
+  //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
+  //Serial.println("\t");
+ // Send();
+}
+
+BLYNK_WRITE(V7) {
+  period = param.asInt();
+  //digitalWrite(ledPin, ledState);
+//   Serial.print(temp_u);
+  //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
+  //Serial.println("\t");
+ // Send();
+}
+BLYNK_WRITE(V8) {
+  period1 = param.asInt();
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -198,11 +229,22 @@ void regul()
 bool relle;
 relle = logic(heat,printTemperature(boyThermometer),printTemperature(kolThermometer),temp_u);
 digitalWrite(relay,relle);
+}
 
-
-
-
-
+void kran_otop()
+{
+  bool kran;
+  kran = regulator(printTemperature(kolThermometer),temp_u_b, printTemperature(batThermometer));
+  if (kran)
+  {
+      open(period,period1,PIN_HIGH);
+  }
+  else
+  {
+       open(period,period1,PIN_LOW);
+  }
+  
+  
 }
 
 void loop()
@@ -210,6 +252,7 @@ void loop()
   ArduinoOTA.handle(); // Всегда готовы к прошивке
   if (Blynk.connected()){ Blynk.run(); Blynk.syncAll();}
   timer.run();
-
+ rssi =  map(WiFi.RSSI(), -105, -35, 0, 100);
+ Blynk.virtualWrite(V11, rssi);
 }
 

@@ -1,38 +1,47 @@
-void kran_otop(uint8_t Time_run, uint8_t PIN)
+
+
+
+bool regulator(float Temp_kol, float temp_u_b, float temp_b)
 {
-  unsigned long newtime; 
-  bool run = true;
-  bool open, close;
-   while (open)
-   {
-    if(!run){
-     digitalWrite(PIN, LOW);
-         
-     Serial.println("работает кран");
-     newtime = millis()+(Time_run*1000);
-     }
-    else if (millis() > newtime){
-        digitalWrite(PIN, HIGH);// Выключить реле
-        open = false;
-        // close = true;
-        run = false; 
-        Serial.println("остановился кран");
-        }
+    // float Temp_kol = printTemperature(kolThermometer);
+    float temp_on;
+    bool kran;
+    if (Temp_kol<temp_u_b)
+    {
+        temp_on = Temp_kol;
     }
-
-
-}
-
-
-void regulator(float temp_u_b, int PIN_HIGH, int PIN_LOW, float temp_bat, uint8_t Time_run)
+    else
+    {
+        temp_on = temp_u_b;
+    }
+if (temp_on>=temp_b)
 {
-if (temp_u_b>temp_bat)
-{
-    kran_otop(Time_run, PIN_HIGH);
+        kran = HIGH;
+        led2.off();
+        led3.on();
 }
 else
 {
-    kran_otop(Time_run, PIN_LOW);
+        kran = LOW;
+        led2.on();
+        led3.off();
+}
+ 
+ return kran;
 }
 
+void open(int Time, int Time1, int PIN)
+{
+// uint32_t tmr;
+
+    if (millis() - tmr >= (flag ? Time*1000 : Time1*1000)) {
+    tmr = millis();
+    flag = !flag;
+    digitalWrite(PIN, flag);
+    // тут можно сделать digitalWrite(pin, flag);
+    // для переключения реле
+  }
+// }
 }
+
+
