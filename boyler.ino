@@ -8,6 +8,7 @@
 #include <ESPmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <EEPROM.h>
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
@@ -97,11 +98,17 @@ void setup()
  digitalWrite(PIN_LOW,HIGH);
  digitalWrite(PIN_HIGH,HIGH);
  digitalWrite(relay,HIGH);
+temp_u=EEPROM.read( 20);
+temp_u_b=EEPROM.read( 28);
+ heat=EEPROM.read( 36);
+period=EEPROM.read( 44);
+period1=EEPROM.read( 52);
 }
 
 
 BLYNK_WRITE(V2) {
   temp_u = param.asFloat();
+  EEPROM.write(20, temp_u);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -111,6 +118,7 @@ BLYNK_WRITE(V2) {
 
 BLYNK_WRITE(V4) {
   temp_u_b = param.asFloat();
+  EEPROM.write(28, temp_u_b);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -121,6 +129,7 @@ BLYNK_WRITE(V4) {
 
 BLYNK_WRITE(V5) {
   heat = param.asInt();
+  EEPROM.write(36, heat);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -130,6 +139,7 @@ BLYNK_WRITE(V5) {
 
 BLYNK_WRITE(V7) {
   period = param.asInt();
+  EEPROM.write(44, period);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -138,6 +148,7 @@ BLYNK_WRITE(V7) {
 }
 BLYNK_WRITE(V8) {
   period1 = param.asInt();
+EEPROM.write(52, period1);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
