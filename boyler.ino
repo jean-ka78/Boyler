@@ -1,5 +1,5 @@
 
-// #define BLYNK_PRINT Serial
+#define BLYNK_PRINT Serial
 
 
 #include <WiFi.h>
@@ -12,7 +12,8 @@
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
-
+WidgetLED led1(V6), led2(V9), led3(V10);
+WidgetTerminal terminal(V12);
 // ID для таймеров Blynk
   int IDt_reconnectBlynk; // ID таймера для перезагрузки
 
@@ -23,8 +24,7 @@ BlynkTimer timer;
 #include "link.h"
 #define ONE_WIRE_BUS 23
 #define TEMPERATURE_PRECISION 12
-WidgetLED led1(V6), led2(V9), led3(V10);
-WidgetTerminal Pr(V8);
+
 
 OneWire oneWire(ONE_WIRE_BUS);
 
@@ -61,9 +61,9 @@ const int relay = 21;
 int PIN_LOW = 19;
 int PIN_HIGH = 18;
 uint32_t tmr;
-bool flag = LOW;
-int period;
-int period1;
+bool flag = HIGH;
+uint32_t per_on;
+uint32_t per_off;
 long rssi;
 #include "heat_regul.h"
 #include "obogrev.h"
@@ -74,19 +74,19 @@ void setup()
    // Debug console
   Serial.begin(9600);
   pinMode(relay, OUTPUT);
-  pinMode(PIN_LOW, OUTPUT);
-  pinMode(PIN_HIGH, OUTPUT);
+  // pinMode(PIN_LOW, OUTPUT);
+  // pinMode(PIN_HIGH, OUTPUT);
   sensors.begin();
 
   sensors.setResolution(kolThermometer, TEMPERATURE_PRECISION);
   sensors.setResolution(boyThermometer, TEMPERATURE_PRECISION);
   sensors.setResolution(batThermometer, TEMPERATURE_PRECISION);
   timer.setInterval(1000, temp_in);
-  timer.setInterval(1000, temp_out);
-  timer.setInterval(500, temp_bat);
+  // timer.setInterval(1000, temp_out);
+  // timer.setInterval(500, temp_bat);
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  timer.setInterval(10, kran_otop);
+  
     reconnectBlynk(); 
 //   Blynk.begin(auth, ssid, pass);
   // You can also specify server:
@@ -100,9 +100,10 @@ void setup()
  digitalWrite(relay,HIGH);
 temp_u=EEPROM.read( 20);
 temp_u_b=EEPROM.read( 28);
- heat=EEPROM.read( 36);
-period=EEPROM.read( 44);
-period1=EEPROM.read( 52);
+heat=EEPROM.read( 36);
+per_off=30;
+per_on=1;
+// timer.setInterval(900, kran_otop);
 }
 
 
@@ -138,8 +139,10 @@ BLYNK_WRITE(V5) {
 }
 
 BLYNK_WRITE(V7) {
-  period = param.asInt();
-  EEPROM.write(44, period);
+  per_off = param.asInt();
+  High.OffTime = per_off;
+  Low.OffTime = per_off;
+  EEPROM.write(44, per_off);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -147,8 +150,10 @@ BLYNK_WRITE(V7) {
  // Send();
 }
 BLYNK_WRITE(V8) {
-  period1 = param.asInt();
-EEPROM.write(52, period1);
+  per_on = param.asInt();
+ High.OnTime = per_on;
+ Low.OnTime = per_on;
+EEPROM.write(52, per_on);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -159,15 +164,25 @@ EEPROM.write(52, period1);
 // function to print the temperature for a device
 float printTemperature(DeviceAddress deviceAddress)
 {
+  sensors.requestTemperatures();
   float tempC = sensors.getTempC(deviceAddress);
+  float result;
   if(tempC == DEVICE_DISCONNECTED_C) 
   {
-    Serial.println("Error: Could not read temperature data");
+     terminal.println("Error: Could not read temperature data");
 
     // return;
   }
-
-return tempC;
+ if (tempC >= 1 & tempC <= 150.00)
+  {
+   result = tempC;
+  }
+  else
+  {
+    result = 0;
+  }
+  
+return result;
 
 }
 
@@ -176,62 +191,13 @@ return tempC;
 
 void temp_in()
 {
-   sensors.requestTemperatures();
-//   printAddress(insideThermometer);
-  float t = printTemperature(kolThermometer);
-float t_old;
-float t_now;
-if (t > 0 && t!=t_old)
-{
-t_old = t;
-t_now = t_old;
-   Blynk.virtualWrite(V0, t_now);
-}
-else
-{
-t_now = t_old;
-// Blynk.virtualWrite(V0, t_now);
-}
+  //  sensors.requestTemperatures();
+   Blynk.virtualWrite(V0, printTemperature(kolThermometer));
+   Blynk.virtualWrite(V1, printTemperature(boyThermometer));
+   Blynk.virtualWrite(V3, printTemperature(batThermometer));
 }
 
-void temp_out()
-{
-sensors.requestTemperatures();
-float t = printTemperature(boyThermometer);
-float t_old;
-float t_now;
-if (t > 0 && t!=t_old)
-{
-t_old = t;
-t_now = t_old;
-   Blynk.virtualWrite(V1, t_now);
-}
-else
-{
-t_now = t_old;
-//  Blynk.virtualWrite(V1, t_now);
-}
-}
 
-void temp_bat()
-{
-sensors.requestTemperatures();
-float t = printTemperature(batThermometer);
-float t_old;
-float t_now;
-if (t > 0 && t!=t_old)
-{
-t_old = t;
-t_now = t_old;
-   Blynk.virtualWrite(V3, t_now);
-}
-else
-{
-t_now = t_old;
-//  Blynk.virtualWrite(V1, t_now);
-}
-// return t_now;
-}
 
 
 
@@ -242,28 +208,41 @@ relle = logic(heat,printTemperature(boyThermometer),printTemperature(kolThermome
 digitalWrite(relay,relle);
 }
 
-void kran_otop()
-{
-  bool kran;
-  kran = regulator(printTemperature(kolThermometer),temp_u_b, printTemperature(batThermometer));
-  if (kran)
-  {
-      open(period,period1,PIN_HIGH);
-  }
-  else
-  {
-       open(period,period1,PIN_LOW);
-  }
+// void kran_otop()
+// {
+//   bool kran, kran_o, kran_c;
+  
+//   kran = regulator(printTemperature(kolThermometer),temp_u_b, printTemperature(batThermometer));
+//   if (kran)
+//   {
+//      if (!kran_c)
+//      {
+//        kran_o =  open(period,period1,PIN_LOW);
+
+//      }
+     
+     
+//   }
+//   else
+//   {
+//     if (!kran_o)
+//     {
+//       kran_c = open(period,period1,PIN_HIGH);
+//     }
+          
+//   }
   
   
-}
+// }
 
 void loop()
 {
   ArduinoOTA.handle(); // Всегда готовы к прошивке
   if (Blynk.connected()){ Blynk.run(); Blynk.syncAll();}
   timer.run();
- rssi =  map(WiFi.RSSI(), -105, -35, 0, 100);
+ rssi =  map(WiFi.RSSI(), -115, -35, 0, 100);
  Blynk.virtualWrite(V11, rssi);
+//  kran_otop();
+regulator(printTemperature(kolThermometer),temp_u_b, printTemperature(batThermometer));
 }
 

@@ -12,7 +12,7 @@
 
 // #define WIFI_SSID               "UniNet"  //Имя точки доступа WIFI VVK   AndroidAP
 // #define WIFI_PASS               "owen2014" //пароль точки доступа WIFI vtb24admin 1234567890
-#define WIFI_SSID               "aonline"  //Имя точки доступа WIFI VVK   AndroidAP
+#define WIFI_SSID               "netis"  //Имя точки доступа WIFI VVK   AndroidAP
 #define WIFI_PASS               "1qaz2wsx3edc" //пароль точки доступа WIFI vtb24admin 1234567890
 
 
@@ -52,9 +52,10 @@ void ConnectBlynk()
     }
   /*  Дисконект - для справки 
     WiFi.disconnect(); // отключаемся от сети
-    Serial.println("Disconnect WiFi.");
+    
   */
-  
+ Serial.println(WiFi.localIP());
+   terminal.println(WiFi.localIP());
   //*******************************************************
   // Запускаем Blynk
 timer.disable(IDt_reconnectBlynk); // Выключаем таймер
@@ -81,7 +82,8 @@ timer.disable(IDt_reconnectBlynk); // Выключаем таймер
 
 
 // Реконектимся если обрыв связи
-void reconnectBlynk() {
+void reconnectBlynk() { 
+  // terminal.println(WiFi.localIP());
   if (!Blynk.connected())
   {
     BLYNK_LOG("Disconnected now");
@@ -94,5 +96,7 @@ void reconnectBlynk() {
     {
       BLYNK_LOG("Not reconnected");      
     }
+  
   }
+  
 }//reconnectBlynk()
