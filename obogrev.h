@@ -6,22 +6,24 @@ class Flasher
   int Kran_Pin; // номер пина со приводом
   uint32_t OnTime; // время включения в миллисекундах
   uint32_t OffTime; // время, когда привод выключен
- 
+  bool run_on = false;
+  bool run_off = false;
   // Текущее состояние
   int Kran_State; // состояние ВКЛ/ВЫКЛ
   unsigned long previousMillis; // последний момент смены состояния
  
   // Конструктор 
   
-  Flasher(int pin )
+  Flasher(int pin)
   {
    Kran_Pin = pin;
+  //  run = Run;
    pinMode(Kran_Pin, OUTPUT);
  
 //    OnTime = on*1000;
 //    OffTime = off*1000;
  
-   Kran_State = LOW;
+   Kran_State = HIGH;
    previousMillis = 0;
   }
  
@@ -31,13 +33,16 @@ class Flasher
 //    OnTime = on*1000;
 //    OffTime = off*1000;
    unsigned long currentMillis = millis(); // текущее время в миллисекундах
- 
-   if((Kran_State == LOW) && (currentMillis - previousMillis >= OnTime*1000))
+//  while (run)
+//  {
+    if((Kran_State == LOW) && (currentMillis - previousMillis >= OnTime*1000))
    {
      terminal.println("Update+OnTime:"+String(OnTime));
      Kran_State = HIGH; // выключаем
      previousMillis = currentMillis; // запоминаем момент времени
      digitalWrite(Kran_Pin, Kran_State); // реализуем новое состояние
+    //  run_on = true;
+
    }
    else if ((Kran_State == HIGH) && (currentMillis - previousMillis >= OffTime*1000))
    {
@@ -46,8 +51,9 @@ class Flasher
      previousMillis = currentMillis ; // запоминаем момент времени
      digitalWrite(Kran_Pin, Kran_State); // реализуем новое состояние
 
+    //  run_off = false;
    }
-
+  // }
   }
 };
 
@@ -70,19 +76,18 @@ void regulator(float Temp_kol, float temp_u_b, float temp_b)
         temp_on = temp_u_b;
     }
 
-if (temp_on>=temp_b & temp_on!=0)
+if ((temp_on>=temp_b) && (temp_on!=0) && (Low.Kran_State == HIGH) || (High.Kran_State == LOW))
 {
-        // Flasher High(PIN_HIGH,per_on,per_off);
-        // kran = LOW;
+        
         High.Update();
         led2.off();
         led3.on();
 }
-else
+else if ((High.Kran_State == HIGH) || (Low.Kran_State == LOW))
 {
-        // Flasher Low(PIN_LOW,per_on,per_off);
-        // kran = HIGH;
+        
         Low.Update();
+        
         led2.on();
         led3.off();
 }

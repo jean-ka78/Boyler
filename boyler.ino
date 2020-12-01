@@ -1,7 +1,4 @@
-
 #define BLYNK_PRINT Serial
-
-
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
@@ -32,13 +29,13 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 // arrays to hold device addresses
-//  DeviceAddress kolThermometer, boyThermometer;
+//  DeviceAddress kolThermometer, boyThermometer, batThermometer;
 
 // Assign address manually. The addresses below will need to be changed
 // to valid device addresses on your bus. Device address can be retrieved
 // by using either oneWire.search(deviceAddress) or individually via
-// sensors.getAddress(deviceAddress, index) 28 64 E1 12 5F 14 01 84; 28 F5 75 C9 2F 14 01 D0
-DeviceAddress kolThermometer = { 0x28, 0x64, 0xE1, 0x12, 0x5F, 0x14, 0x01, 0x84 };
+// sensors.getAddress(deviceAddress, index);// 28 64 E1 12 5F 14 01 84; 28 F5 75 C9 2F 14 01 D0
+DeviceAddress kolThermometer   = { 0x28, 0x64, 0xE1, 0x12, 0x5F, 0x14, 0x01, 0x84 };
 DeviceAddress boyThermometer   = { 0x28, 0xF5, 0x75, 0xC9, 0x2F, 0x14, 0x01, 0xD0 };
 DeviceAddress batThermometer   = { 0x28, 0xAA, 0xF0, 0x86, 0x13, 0x13, 0x02, 0x50 };
 
