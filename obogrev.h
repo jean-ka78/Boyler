@@ -41,7 +41,10 @@ class Flasher
      Kran_State = HIGH; // выключаем
      previousMillis = currentMillis; // запоминаем момент времени
      digitalWrite(Kran_Pin, Kran_State); // реализуем новое состояние
-    //  run_on = true;
+     run_on = false;
+     led4.off();
+    //  led3.on();
+
 
    }
    else if ((Kran_State == HIGH) && (currentMillis - previousMillis >= OffTime*1000))
@@ -50,8 +53,9 @@ class Flasher
      Kran_State = LOW; // включаем
      previousMillis = currentMillis ; // запоминаем момент времени
      digitalWrite(Kran_Pin, Kran_State); // реализуем новое состояние
-
-    //  run_off = false;
+      led4.on();
+      // led3.off();
+      run_on = true;
    }
   // }
   }

@@ -9,7 +9,7 @@
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
-WidgetLED led1(V6), led2(V9), led3(V10);
+WidgetLED led1(V6), led2(V9), led3(V10), led4(V13);
 WidgetTerminal terminal(V12);
 // ID для таймеров Blynk
   int IDt_reconnectBlynk; // ID таймера для перезагрузки
