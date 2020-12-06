@@ -1,6 +1,6 @@
-bool logic(bool heat_on, float Temp_boy, float Temp_kol, float temp_u)
+bool logic(bool heat_on, float Temp_boy, float Temp_kol, float temp_u, float gis)
 {
-    bool nasos = true;
+    bool nasos = false;
     float temp_on;
     if (Temp_kol<temp_u)
     {
@@ -13,21 +13,22 @@ bool logic(bool heat_on, float Temp_boy, float Temp_kol, float temp_u)
         
     if (heat_on)
     {
-        if (Temp_boy<temp_on)
+        if (Temp_boy<(temp_on+gis))
         {
-           nasos = false;
-           led1.on();
+           nasos = true;
+        //    led1.on();
         }
-        else
+        else if (Temp_boy>=temp_on)
         {
-            nasos = true;
-            led1.off();
+                 
+            nasos = false;
+            // led1.off();
         }
         
     }
     else
     {
-        nasos = true;
+        nasos = false;
         led1.off();
     }
     return nasos;

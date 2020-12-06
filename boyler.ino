@@ -53,6 +53,7 @@ DeviceAddress batThermometer   = { 0x28, 0xAA, 0xF0, 0x86, 0x13, 0x13, 0x02, 0x5
 // in Blynk app writes values to the Virtual Pin 1
 float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
+uint32_t gis_boy;  //gisterezis boyler
 bool heat;
 const int relay = 21;
 int PIN_LOW = 19;
@@ -94,12 +95,14 @@ void setup()
   ArduinoOTA.begin(); 
  digitalWrite(PIN_LOW,HIGH);
  digitalWrite(PIN_HIGH,HIGH);
- digitalWrite(relay,HIGH);
+ digitalWrite(relay,LOW);
 temp_u=EEPROM.read( 20);
 temp_u_b=EEPROM.read( 28);
 heat=EEPROM.read( 36);
+gis_boy = EEPROM.read(60);
 per_off=30;
 per_on=1;
+terminal.println("gisterezis: "+String(gis_boy));
 // timer.setInterval(900, kran_otop);
 }
 
@@ -117,6 +120,17 @@ BLYNK_WRITE(V2) {
 BLYNK_WRITE(V4) {
   temp_u_b = param.asFloat();
   EEPROM.write(28, temp_u_b);
+  //digitalWrite(ledPin, ledState);
+//   Serial.print(temp_u);
+  //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
+  //Serial.println("\t");
+ // Send();
+}
+
+BLYNK_WRITE(V14) {
+  gis_boy = param.asFloat();
+
+EEPROM.put(60, gis_boy);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
@@ -201,7 +215,17 @@ void temp_in()
 void regul()
 {
 bool relle;
-relle = logic(heat,printTemperature(boyThermometer),printTemperature(kolThermometer),temp_u);
+relle = logic(heat,printTemperature(boyThermometer),printTemperature(kolThermometer),temp_u, gis_boy);
+if (!relle)
+{
+  led1.off();
+} else 
+{
+  led1.on();
+}
+
+
+
 digitalWrite(relay,relle);
 }
 
