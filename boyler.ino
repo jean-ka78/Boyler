@@ -6,6 +6,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <EEPROM.h>
+#include "NTC.h"
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
@@ -19,7 +20,7 @@ WidgetTerminal terminal(V12);
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "link.h"
-#define ONE_WIRE_BUS 23
+#define ONE_WIRE_BUS 15
 #define TEMPERATURE_PRECISION 12
 
 
@@ -55,17 +56,27 @@ float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
 uint32_t gis_boy;  //gisterezis boyler
 bool heat;
+int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
+int thermistorPin2 = 32;
+int thermistorPin3 = 35;
 const int relay = 21;
-int PIN_LOW = 19;
-int PIN_HIGH = 18;
+int PIN_LOW = 22;
+int PIN_HIGH = 23;
 uint32_t tmr;
 bool flag = HIGH;
 uint32_t per_on;
 uint32_t per_off;
+float T_boyler, T_koll, T_bat;
 long rssi;
+unsigned long old_time = 0;
+unsigned long old_time1 = 0;
+unsigned long old_time2 = 0;
 #include "heat_regul.h"
 #include "obogrev.h"
 
+NTC kollektor(thermistorPin1, 50);
+NTC boyler(thermistorPin2, 50);
+NTC bat(thermistorPin3, 50);
 
 void setup()
 { 
@@ -84,7 +95,7 @@ void setup()
   // timer.setInterval(500, temp_bat);
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  
+  // timer.setInterval(5000, regulator(kollektor.Update(),temp_u_b, bat.Update()));
     reconnectBlynk(); 
 //   Blynk.begin(auth, ssid, pass);
   // You can also specify server:
@@ -203,19 +214,15 @@ return result;
 void temp_in()
 {
   //  sensors.requestTemperatures();
-   Blynk.virtualWrite(V0, printTemperature(kolThermometer));
-   Blynk.virtualWrite(V1, printTemperature(boyThermometer));
-   Blynk.virtualWrite(V3, printTemperature(batThermometer));
+   Blynk.virtualWrite(V0, T_koll);
+   Blynk.virtualWrite(V1, T_boyler);
+   Blynk.virtualWrite(V3, T_bat);
 }
-
-
-
-
 
 void regul()
 {
 bool relle;
-relle = logic(heat,printTemperature(boyThermometer),printTemperature(kolThermometer),temp_u, gis_boy);
+relle = logic(heat,T_boyler,T_koll,temp_u, gis_boy);
 if (!relle)
 {
   led1.off();
@@ -229,33 +236,6 @@ if (!relle)
 digitalWrite(relay,relle);
 }
 
-// void kran_otop()
-// {
-//   bool kran, kran_o, kran_c;
-  
-//   kran = regulator(printTemperature(kolThermometer),temp_u_b, printTemperature(batThermometer));
-//   if (kran)
-//   {
-//      if (!kran_c)
-//      {
-//        kran_o =  open(period,period1,PIN_LOW);
-
-//      }
-     
-     
-//   }
-//   else
-//   {
-//     if (!kran_o)
-//     {
-//       kran_c = open(period,period1,PIN_HIGH);
-//     }
-          
-//   }
-  
-  
-// }
-
 void loop()
 {
   ArduinoOTA.handle(); // Всегда готовы к прошивке
@@ -264,6 +244,32 @@ void loop()
  rssi =  map(WiFi.RSSI(), -115, -35, 0, 100);
  Blynk.virtualWrite(V11, rssi);
 //  kran_otop();
-regulator(printTemperature(kolThermometer),temp_u_b, printTemperature(batThermometer));
+ unsigned long real_time = millis();
+  if (real_time - old_time>2000)
+    {
+      old_time = real_time;
+      T_koll = kollektor.Update();
+      // T_bat = bat.Update();
+      // T_boyler = boyler.Update();
+    }
+    if (real_time - old_time1>2000)
+    {
+      old_time1 = real_time;
+      // T_koll = kollektor.Update();
+      T_bat = bat.Update();
+      // T_boyler = boyler.Update();
+    }
+    if (real_time - old_time2>2000)
+    {
+      old_time2 = real_time;
+      // T_koll = kollektor.Update();
+      // T_bat = bat.Update();
+      T_boyler = boyler.Update();
+    }
+    
+    
+    
+    regulator(T_koll,temp_u_b, T_bat);
 }
+
 
