@@ -80,7 +80,7 @@ void regulator(float Temp_kol, float temp_u_b, float temp_b)
         temp_on = temp_u_b;
     }
 
-if ((temp_on>=temp_b) && (temp_on!=0) && (Low.Kran_State == HIGH) || (High.Kran_State == LOW))
+if ((temp_on>=temp_b || temp_on==0) && (Low.Kran_State == HIGH) || (High.Kran_State == LOW))
 {
         
         High.Update();

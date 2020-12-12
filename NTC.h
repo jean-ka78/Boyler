@@ -312,12 +312,12 @@ double Update()
   {
     unsigned long real_time = millis();
     unsigned long old_time = 0;
-    if (real_time - old_time>50)
+    if (real_time - old_time>200)
     {
       old_time = real_time;
       adc = analogRead(ntc_pin);
       adc = ADC_LUT[(int)adc];
-//  Serial.println("adc:"+String(adc));
+      //  Serial.println("adc:"+String(adc));
        adcSamples[i] = adc;  // прочитать значение на выводе и сохранить
       // Serial.println(adcSamples[i]);
     }
