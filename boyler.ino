@@ -7,6 +7,7 @@
 #include <ArduinoOTA.h>
 #include <EEPROM.h>
 #include "NTC.h"
+
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
@@ -77,7 +78,7 @@ unsigned long old_time2 = 0;
 NTC kollektor(thermistorPin1, 50);
 NTC boyler(thermistorPin2, 50);
 NTC bat(thermistorPin3, 50);
-
+#include "json.h"
 void setup()
 { 
    // Debug console
@@ -95,7 +96,7 @@ void setup()
   // timer.setInterval(500, temp_bat);
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  // timer.setInterval(5000, regulator(kollektor.Update(),temp_u_b, bat.Update()));
+  timer.setInterval(1000, send_json);
     reconnectBlynk(); 
 //   Blynk.begin(auth, ssid, pass);
   // You can also specify server:
