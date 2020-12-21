@@ -75,9 +75,9 @@ unsigned long old_time2 = 0;
 #include "heat_regul.h"
 #include "obogrev.h"
 
-NTC kollektor(thermistorPin1, 50);
-NTC boyler(thermistorPin2, 50);
-NTC bat(thermistorPin3, 50);
+NTC kollektor(thermistorPin1);
+NTC boyler(thermistorPin2);
+NTC bat(thermistorPin3);
 #include "json.h"
 void setup()
 { 
@@ -108,9 +108,9 @@ void setup()
  digitalWrite(PIN_LOW,HIGH);
  digitalWrite(PIN_HIGH,HIGH);
  digitalWrite(relay,LOW);
- T_koll = kollektor.Update();
-       T_bat = bat.Update();
-T_boyler = boyler.Update();
+ T_koll = kollektor.Update_f();
+       T_bat = bat.Update_f();
+T_boyler = boyler.Update_f();
 temp_u=EEPROM.read( 20);
 temp_u_b=EEPROM.read( 28);
 heat=EEPROM.read( 36);
@@ -218,9 +218,9 @@ return result;
 void temp_in()
 {
   //  sensors.requestTemperatures();
-   Blynk.virtualWrite(V0, kollektor.Update());
-   Blynk.virtualWrite(V1, boyler.Update());
-   Blynk.virtualWrite(V3, bat.Update());
+   Blynk.virtualWrite(V0, kollektor.Update_f());
+   Blynk.virtualWrite(V1, boyler.Update_f());
+   Blynk.virtualWrite(V3, bat.Update_f());
 }
 
 void regul()
@@ -249,7 +249,7 @@ void loop()
   if (real_time - old_time>1000)
     {
       old_time = real_time;
-      T_koll = kollektor.Update();
+      T_koll = kollektor.Update_f();
       // T_bat = bat.Update();
       // T_boyler = boyler.Update();
     }
@@ -257,7 +257,7 @@ void loop()
     {
       old_time1 = real_time;
       // T_koll = kollektor.Update();
-      T_bat = bat.Update();
+      T_bat = bat.Update_f();
       // T_boyler = boyler.Update();
     }
     if (real_time - old_time2>3000)
@@ -265,7 +265,7 @@ void loop()
       old_time2 = real_time;
       // T_koll = kollektor.Update();
       // T_bat = bat.Update();
-      T_boyler = boyler.Update();
+      T_boyler = boyler.Update_f();
 
 
     }

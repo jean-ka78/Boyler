@@ -286,22 +286,30 @@ const float ADC_LUT[4096] PROGMEM = { 0,
 3996.0000,3996.8000,3997.3999,3998.0000,3998.8000,3999.6001,4000.0000,4002.6001,4004.8000,4007.0000,4009.3999,4011.8000,4014.0000,4016.2000,4026.80
 };
 double adcAverage  = 0; 
-int    adc_count;
+int    adc_count = 50;
 int    adcSamples[50];  // Массив для хранения отдельных результатов
 
 double Vout, Rt = 0;
 double T, Tc, Tf = 0;
 double adc = 0;
+/*
+Медианный фильтр
+*/
+
+int val[3];
+int val_filter;
+byte index;
+
 
   /* Рассчитать среднее сопротивление термистора:
      Как упоминалось выше, мы будем считывать значения АЦП несколько раз,
      чтобы получить массив выборок. Небольшая задержка используется для
      корректной работы функции analogRead. */
 public:
-    NTC(int pin, int c)
+    NTC(int pin)
     {
         ntc_pin = pin;
-        adc_count = c;
+        // adc_count = c;
     }
    
 double Update()
@@ -342,8 +350,53 @@ double Update()
   // Serial.println(Tc);
 
   return Tc;    // вернуть температуру в градусах Цельсия
+ 
+}
 
-  
+double Update_f()
+{
+
+//  adc = 0; 
+
+  if (++index > 2) index = 0; // переключаем индекс с 0 до 2 (0, 1, 2, 0, 1, 2…)
+      adc = analogRead(ntc_pin);
+      adc = ADC_LUT[(int)adc];
+  // val[index] = analogRead(0); // записываем значение с датчика в массив
+val[index] = adc;
+
+  // фильтровать медианным фильтром из 3ёх ПОСЛЕДНИХ измерений
+  val_filter = middle_of_3(val[0], val[1], val[2]);
+  // Serial.println(val_filter); // для примера выводим в порт
+}
+// медианный фильтр из 3ёх значений
+int middle_of_3(int a, int b, int c) {
+  int middle;
+  if ((a <= b) && (a <= c)) {
+    middle = (b <= c) ? b : c;
+  }
+  else {
+    if ((b <= a) && (b <= c)) {
+      middle = (a <= c) ? a : c;
+    }
+    else {
+      middle = (a <= b) ? a : b;
+    }
+  }
+  // return middle;
+
+//  Serial.println("adcAverage:"+String(adcAverage));
+  Vout = middle * Vs/adcMax;
+//  Vout = adc * Vs/adcMax;
+//Serial.println("Vout:"+String(Vout));
+  Rt = R1 * Vout / (Vs - Vout);
+
+  T = 1/(1/To + log(Rt/Ro)/Beta);    // Temperature in Kelvin
+  Tc = T - 273.15;                   // Celsius
+  Tf = Tc * 9 / 5 + 32;              // Fahrenheit
+  // Serial.println(Tc);
+
+  return Tc;    // вернуть температуру в градусах Цельсия
+
 }
 
 };
