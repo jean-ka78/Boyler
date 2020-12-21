@@ -246,21 +246,21 @@ void loop()
  Blynk.virtualWrite(V11, rssi);
 //  kran_otop();
  unsigned long real_time = millis();
-  if (real_time - old_time>1000)
+  if (real_time - old_time>5000)
     {
       old_time = real_time;
       T_koll = kollektor.Update_f();
       // T_bat = bat.Update();
       // T_boyler = boyler.Update();
     }
-    if (real_time - old_time1>2000)
+    if (real_time - old_time1>6000)
     {
       old_time1 = real_time;
       // T_koll = kollektor.Update();
       T_bat = bat.Update_f();
       // T_boyler = boyler.Update();
     }
-    if (real_time - old_time2>3000)
+    if (real_time - old_time2>7000)
     {
       old_time2 = real_time;
       // T_koll = kollektor.Update();

@@ -357,31 +357,35 @@ double Update_f()
 {
 
 //  adc = 0; 
-
-  if (++index > 2) index = 0; // переключаем индекс с 0 до 2 (0, 1, 2, 0, 1, 2…)
-      adc = analogRead(ntc_pin);
-      adc = ADC_LUT[(int)adc];
-  // val[index] = analogRead(0); // записываем значение с датчика в массив
-val[index] = adc;
-
-  // фильтровать медианным фильтром из 3ёх ПОСЛЕДНИХ измерений
-  val_filter = middle_of_3(val[0], val[1], val[2]);
-  // Serial.println(val_filter); // для примера выводим в порт
-}
-// медианный фильтр из 3ёх значений
-int middle_of_3(int a, int b, int c) {
-  int middle;
-  if ((a <= b) && (a <= c)) {
-    middle = (b <= c) ? b : c;
-  }
-  else {
-    if ((b <= a) && (b <= c)) {
-      middle = (a <= c) ? a : c;
-    }
-    else {
-      middle = (a <= b) ? a : b;
+ // массив для хранения данных
+ int middle;
+  int raw[adc_count];
+  // считываем вход и помещаем величину в ячейки массива
+  for (int i = 0; i < adc_count; i++){
+      unsigned long real_time = millis();
+    unsigned long old_time = 0;
+    if (real_time - old_time>100)
+    {
+      old_time = real_time;  
+    adc = analogRead(ntc_pin);
+    raw[i] = ADC_LUT[(int)adc];
     }
   }
+  // сортируем массив по возрастанию значений в ячейках
+  int temp = 0; // временная переменная
+
+  for (int i = 0; i < adc_count; i++){
+    for (int j = 0; j < adc_count - 1; j++){
+      if (raw[j] > raw[j + 1]){
+        temp = raw[j];
+        raw[j] = raw[j + 1];
+        raw[j + 1] = temp;
+      }
+    }
+  }
+  // возвращаем значение средней ячейки массива
+  middle = raw[adc_count/2];
+ 
   // return middle;
 
 //  Serial.println("adcAverage:"+String(adcAverage));
