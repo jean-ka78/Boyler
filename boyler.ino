@@ -108,6 +108,9 @@ void setup()
  digitalWrite(PIN_LOW,HIGH);
  digitalWrite(PIN_HIGH,HIGH);
  digitalWrite(relay,LOW);
+ T_koll = kollektor.Update();
+       T_bat = bat.Update();
+T_boyler = boyler.Update();
 temp_u=EEPROM.read( 20);
 temp_u_b=EEPROM.read( 28);
 heat=EEPROM.read( 36);
@@ -215,9 +218,9 @@ return result;
 void temp_in()
 {
   //  sensors.requestTemperatures();
-   Blynk.virtualWrite(V0, T_koll);
-   Blynk.virtualWrite(V1, T_boyler);
-   Blynk.virtualWrite(V3, T_bat);
+   Blynk.virtualWrite(V0, kollektor.Update());
+   Blynk.virtualWrite(V1, boyler.Update());
+   Blynk.virtualWrite(V3, bat.Update());
 }
 
 void regul()
@@ -243,30 +246,33 @@ void loop()
  Blynk.virtualWrite(V11, rssi);
 //  kran_otop();
  unsigned long real_time = millis();
-  if (real_time - old_time>5000)
+  if (real_time - old_time>1000)
     {
       old_time = real_time;
       T_koll = kollektor.Update();
       // T_bat = bat.Update();
       // T_boyler = boyler.Update();
     }
-    if (real_time - old_time1>10000)
+    if (real_time - old_time1>2000)
     {
       old_time1 = real_time;
       // T_koll = kollektor.Update();
       T_bat = bat.Update();
       // T_boyler = boyler.Update();
     }
-    if (real_time - old_time2>7000)
+    if (real_time - old_time2>3000)
     {
       old_time2 = real_time;
       // T_koll = kollektor.Update();
       // T_bat = bat.Update();
       T_boyler = boyler.Update();
+
+
     }
+       
+    regulator(T_koll, temp_u_b, T_bat);
+
     
-    
-    regulator(T_koll,temp_u_b, T_bat);
 }
 
 
