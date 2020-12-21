@@ -366,7 +366,7 @@ double Update_f()
   //   old_time = real_time;  
     adc = analogRead(ntc_pin);
     raw[i] = ADC_LUT[(int)adc];
-    delay(20);
+    delay(10);
     }
   
   // сортируем массив по возрастанию значений в ячейках
