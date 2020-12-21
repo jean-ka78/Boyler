@@ -318,17 +318,18 @@ double Update()
     adc = 0; 
   for (int i = 0; i < adc_count; i++) 
   {
-    unsigned long real_time = millis();
-    unsigned long old_time = 0;
-    if (real_time - old_time>200)
-    {
-      old_time = real_time;
+    // unsigned long real_time = millis();
+    // unsigned long old_time = 0;
+    // if (real_time - old_time>200)
+    // {
+      // old_time = real_time;
       adc = analogRead(ntc_pin);
       adc = ADC_LUT[(int)adc];
       //  Serial.println("adc:"+String(adc));
        adcSamples[i] = adc;  // прочитать значение на выводе и сохранить
       // Serial.println(adcSamples[i]);
-    }
+      delay(10);
+    // }
   }
 
   /* Затем мы просто усредняем все эти выборки для "сглаживания" измерений. */
@@ -362,10 +363,12 @@ double Update_f()
   int raw[adc_count];
   // считываем вход и помещаем величину в ячейки массива 
  
+
   for (int i = 0; i < adc_count; i++){
-  //   old_time = real_time;  
+    //   old_time = real_time;  
     adc = analogRead(ntc_pin);
     raw[i] = ADC_LUT[(int)adc];
+    // this_thread 
     delay(10);
     }
   
