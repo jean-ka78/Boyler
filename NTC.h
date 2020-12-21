@@ -362,14 +362,14 @@ double Update_f()
   int raw[adc_count];
   // считываем вход и помещаем величину в ячейки массива
   for (int i = 0; i < adc_count; i++){
-      unsigned long real_time = millis();
-    unsigned long old_time = 0;
-    if (real_time - old_time>100)
-    {
-      old_time = real_time;  
+  //     unsigned long real_time = millis();
+  //   unsigned long old_time = 0;
+  //   if (real_time - old_time>100)
+  //   {
+  //     old_time = real_time;  
     adc = analogRead(ntc_pin);
     raw[i] = ADC_LUT[(int)adc];
-    }
+    // }
   }
   // сортируем массив по возрастанию значений в ячейках
   int temp = 0; // временная переменная
