@@ -11,7 +11,7 @@
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
-WidgetLED led1(V6), led2(V9), led3(V10), led4(V13);
+WidgetLED led1(V6), led2(V9), led3(V10), led4(V13), led5(V16);
 WidgetTerminal terminal(V12);
 // ID для таймеров Blynk
   int IDt_reconnectBlynk; // ID таймера для перезагрузки
@@ -57,10 +57,12 @@ float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
 uint32_t gis_boy;  //gisterezis boyler
 bool heat;
+bool heat_otop;
 int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
 int thermistorPin2 = 32;
 int thermistorPin3 = 35;
 const int relay = 21;
+const int nasos_otop = 19;
 int PIN_LOW = 22;
 int PIN_HIGH = 23;
 uint32_t tmr;
@@ -84,8 +86,9 @@ void setup()
    // Debug console
   Serial.begin(9600);
   pinMode(relay, OUTPUT);
-  // pinMode(PIN_LOW, OUTPUT);
-  // pinMode(PIN_HIGH, OUTPUT);
+  pinMode(PIN_LOW, OUTPUT);
+  pinMode(PIN_HIGH, OUTPUT);
+  pinMode(nasos_otop, OUTPUT);
   sensors.begin();
 
   sensors.setResolution(kolThermometer, TEMPERATURE_PRECISION);
@@ -105,11 +108,12 @@ void setup()
  ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
   //ArduinoOTA.setPassword((const char *)"0000"); // Задаем пароль доступа для удаленной прошивки
   ArduinoOTA.begin(); 
- digitalWrite(PIN_LOW,HIGH);
- digitalWrite(PIN_HIGH,HIGH);
- digitalWrite(relay,LOW);
- T_koll = kollektor.Update_f();
-       T_bat = bat.Update_f();
+digitalWrite(PIN_LOW,HIGH);
+digitalWrite(PIN_HIGH,HIGH);
+digitalWrite(relay,LOW);
+digitalWrite(nasos_otop, LOW);
+T_koll = kollektor.Update_f();
+T_bat = bat.Update_f();
 T_boyler = boyler.Update_f();
 temp_u=EEPROM.read( 20);
 temp_u_b=EEPROM.read( 28);
@@ -163,6 +167,17 @@ BLYNK_WRITE(V5) {
   //Serial.println("\t");
  // Send();
 }
+
+BLYNK_WRITE(V15) {
+  heat_otop = param.asInt();
+  // EEPROM.write(36, heat);
+  //digitalWrite(ledPin, ledState);
+//   Serial.print(temp_u);
+  //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
+  //Serial.println("\t");
+ // Send();
+}
+
 
 BLYNK_WRITE(V7) {
   per_off = param.asInt();

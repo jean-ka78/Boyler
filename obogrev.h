@@ -4,12 +4,12 @@ class Flasher
   // Переменные - члены класса
   // Инициализируются при запуске
   int Kran_Pin; // номер пина со приводом
-  uint32_t OnTime; // время включения в миллисекундах
-  uint32_t OffTime; // время, когда привод выключен
+  unsigned long OnTime; // время включения в миллисекундах
+  unsigned long OffTime; // время, когда привод выключен
   bool run_on = false;
   bool run_off = false;
   // Текущее состояние
-  int Kran_State; // состояние ВКЛ/ВЫКЛ
+  bool Kran_State = HIGH; // состояние ВКЛ/ВЫКЛ
   unsigned long previousMillis; // последний момент смены состояния
  
   // Конструктор 
@@ -70,7 +70,11 @@ void regulator(float Temp_kol, float temp_u_b, float temp_b)
 {
     // float Temp_kol = printTemperature(kolThermometer);
     float temp_on;
-    bool kran;
+    // bool kran;
+if (heat_otop)
+{
+    digitalWrite(nasos_otop, heat_otop);
+   led5.on();
     if (Temp_kol<temp_u_b)
     {
         temp_on = Temp_kol;
@@ -95,6 +99,12 @@ else if ((High.Kran_State == HIGH) || (Low.Kran_State == LOW))
         led2.on();
         led3.off();
 }
- 
+}
+else
+{
+    digitalWrite(nasos_otop, heat_otop);
+    led5.off();
+}
+
 //  return kran;
 }

@@ -1,8 +1,8 @@
 #define USE_LOCAL_SERVER
 
 #ifdef USE_LOCAL_SERVER
-      //#define SERVER                  IPAddress(192, 168, 10, 9) // Свой IP пишите
-      #define SERVER                  "greenhouse.net.ua" // Имя своего хоста 
+      #define SERVER                  IPAddress(192, 168, 1, 14) // Свой IP пишите
+      // #define SERVER                  "greenhouse.net.ua" // Имя своего хоста 
 
 #endif
 
@@ -12,7 +12,7 @@
 
 // #define WIFI_SSID               "UniNet"  //Имя точки доступа WIFI VVK   AndroidAP
 // #define WIFI_PASS               "owen2014" //пароль точки доступа WIFI vtb24admin 1234567890
-#define WIFI_SSID               "netis"  //Имя точки доступа WIFI VVK   AndroidAP
+#define WIFI_SSID               "aonline"  //Имя точки доступа WIFI VVK   AndroidAP
 #define WIFI_PASS               "1qaz2wsx3edc" //пароль точки доступа WIFI vtb24admin 1234567890
 
 
