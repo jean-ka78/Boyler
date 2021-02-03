@@ -214,7 +214,7 @@ float printTemperature(DeviceAddress deviceAddress)
 
     // return;
   }
- if (tempC >= 1 & tempC <= 150.00)
+ if (tempC >= 1 && tempC <= 150.00)
   {
    result = tempC;
   }
