@@ -13,14 +13,14 @@ bool logic(bool heat_on, float Temp_boy, float Temp_kol, float temp_u, float gis
         
     if (heat_on)
     {
-        if (Temp_boy<(temp_on-gis))
+        if (Temp_boy<(temp_on+gis))
         {
            nasos = true;
         //    led1.on();
-       heat_otop = LOW;
+    //    heat_otop = LOW;
 
         }
-        if (Temp_boy>(temp_on+gis))
+        if (Temp_boy >= temp_on)
         {
             nasos = false;
             // heat_otop = HIGH;
@@ -37,4 +37,5 @@ bool logic(bool heat_on, float Temp_boy, float Temp_kol, float temp_u, float gis
         Blynk.syncVirtual(V15);
         }
     return nasos;
+
 }

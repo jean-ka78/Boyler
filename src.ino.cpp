@@ -55,7 +55,8 @@ DeviceAddress batThermometer   = { 0x28, 0xAA, 0xF0, 0x86, 0x13, 0x13, 0x02, 0x5
 // in Blynk app writes values to the Virtual Pin 1
 float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
-uint32_t gis_boy;  //gisterezis boyler
+float temp_off_otop;
+float gis_boy;  //gisterezis boyler
 bool heat;
 bool heat_otop;
 int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
@@ -81,6 +82,31 @@ NTC kollektor(thermistorPin1);
 NTC boyler(thermistorPin2);
 NTC bat(thermistorPin3);
 #include "json.h"
+
+void temp_in()
+{
+  //  sensors.requestTemperatures();
+   Blynk.virtualWrite(V0, kollektor.Update_f());
+   Blynk.virtualWrite(V1, boyler.Update_f());
+   Blynk.virtualWrite(V3, bat.Update_f());
+}
+
+
+void regul()
+{
+bool relle;
+relle = logic(heat,T_boyler,T_koll,temp_u, gis_boy);
+if (!relle)
+{
+  led1.off();
+} else 
+{
+  led1.on();
+}
+digitalWrite(relay,relle);
+}
+
+
 void setup()
 { 
    // Debug console
@@ -118,7 +144,7 @@ T_boyler = boyler.Update_f();
 temp_u=EEPROM.read( 20);
 temp_u_b=EEPROM.read( 28);
 heat=EEPROM.read( 36);
-gis_boy = EEPROM.read(60);
+gis_boy = EEPROM.read(42);
 per_off=30;
 per_on=1;
 terminal.println("gisterezis: "+String(gis_boy));
@@ -148,13 +174,14 @@ BLYNK_WRITE(V4) {
 
 BLYNK_WRITE(V14) {
   gis_boy = param.asFloat();
-
-EEPROM.put(60, gis_boy);
+EEPROM.write(42, gis_boy);
+// EEPROM.put(60, gis_boy);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
   //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
   //Serial.println("\t");
  // Send();
+//  terminal.println("gis_blynk: "+String(gis_boy));
 }
 
 
@@ -170,6 +197,16 @@ BLYNK_WRITE(V5) {
 
 BLYNK_WRITE(V15) {
   heat_otop = param.asInt();
+  // EEPROM.write(36, heat);
+  //digitalWrite(ledPin, ledState);
+//   Serial.print(temp_u);
+  //Serial.write((uint8_t*)&temp_u, sizeof(temp_u));
+  //Serial.println("\t");
+ // Send();
+}
+
+BLYNK_WRITE(V17) {
+  temp_off_otop = param.asFloat();
   // EEPROM.write(36, heat);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -202,6 +239,8 @@ EEPROM.write(52, per_on);
  // Send();
 }
 
+
+
 // function to print the temperature for a device
 float printTemperature(DeviceAddress deviceAddress)
 {
@@ -230,27 +269,7 @@ return result;
 // function to print a device's resolution
 
 
-void temp_in()
-{
-  //  sensors.requestTemperatures();
-   Blynk.virtualWrite(V0, kollektor.Update_f());
-   Blynk.virtualWrite(V1, boyler.Update_f());
-   Blynk.virtualWrite(V3, bat.Update_f());
-}
 
-void regul()
-{
-bool relle;
-relle = logic(heat,T_boyler,T_koll,temp_u, gis_boy);
-if (!relle)
-{
-  led1.off();
-} else 
-{
-  led1.on();
-}
-digitalWrite(relay,relle);
-}
 
 void loop()
 {
@@ -261,21 +280,21 @@ void loop()
  Blynk.virtualWrite(V11, rssi);
 //  kran_otop();
  unsigned long real_time = millis();
-  if (real_time - old_time>5000)
+  if (real_time - old_time>1000)
     {
       old_time = real_time;
       T_koll = kollektor.Update_f();
       // T_bat = bat.Update();
       // T_boyler = boyler.Update();
     }
-    if (real_time - old_time1>6000)
+    if (real_time - old_time1>2000)
     {
       old_time1 = real_time;
       // T_koll = kollektor.Update();
       T_bat = bat.Update_f();
       // T_boyler = boyler.Update();
     }
-    if (real_time - old_time2>7000)
+    if (real_time - old_time2>3000)
     {
       old_time2 = real_time;
       // T_koll = kollektor.Update();
@@ -285,7 +304,7 @@ void loop()
 
     }
        
-    regulator(T_koll, temp_u_b, T_bat);
+    regulator(T_koll, temp_u_b, T_bat, temp_off_otop);
 
     
 }
