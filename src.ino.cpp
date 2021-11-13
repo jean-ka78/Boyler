@@ -61,7 +61,7 @@ DeviceAddress batThermometer   = { 0x28, 0xAA, 0xF0, 0x86, 0x13, 0x13, 0x02, 0x5
 float  temp_u = 50;     //Уставка бойлера
 float  temp_u_b = 50;   //Уставка баттарей
 float temp_off_otop = 35; //уставка отключения отопления
-float gis_boy;  //gisterezis boyler
+float gis_boy = -5;  //gisterezis boyler
 bool heat = true; //флаг включения бойлера
 bool heat_otop = true; //Флаг включения отопления
 int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
