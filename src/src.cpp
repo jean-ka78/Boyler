@@ -26,6 +26,7 @@ WidgetTerminal terminal(V12);
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "link.h"
+// #include <ESP_EEPROM.h>
 #define ONE_WIRE_BUS 15
 #define TEMPERATURE_PRECISION 12
 
@@ -58,12 +59,23 @@ DeviceAddress batThermometer   = { 0x28, 0xAA, 0xF0, 0x86, 0x13, 0x13, 0x02, 0x5
 
 // This function will be called every time Slider Widget
 // in Blynk app writes values to the Virtual Pin 1
+struct st_Enum
+{
+
 float  temp_u;     //Уставка бойлера
 float  temp_u_b;   //Уставка баттарей
 float temp_off_otop; //уставка отключения отопления
 float gis_boy;  //gisterezis boyler
 bool heat; //флаг включения бойлера
 bool heat_otop; //Флаг включения отопления
+uint32_t per_on; //Период включения 
+uint32_t per_off; //Период виключения
+
+} eeprom;
+
+
+
+
 int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
 int thermistorPin2 = 32;
 int thermistorPin3 = 35;
@@ -73,8 +85,7 @@ int PIN_LOW = 22;
 int PIN_HIGH = 23;
 uint32_t tmr;
 bool flag = HIGH;
-uint32_t per_on;
-uint32_t per_off;
+
 float T_boyler, T_koll, T_bat;
 long rssi;
 unsigned long old_time = 0;
@@ -100,7 +111,7 @@ void temp_in()
 void regul()
 {
 bool relle;
-relle = logic(heat,T_boyler,T_koll,temp_u, gis_boy);
+relle = logic(eeprom.heat,T_boyler,T_koll,eeprom.temp_u, eeprom.gis_boy);
 if (!relle)
 {
   led1.off();
@@ -115,12 +126,29 @@ digitalWrite(relay,relle);
 void setup()
 { 
    // Debug console
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(relay, OUTPUT);
   pinMode(PIN_LOW, OUTPUT);
   pinMode(PIN_HIGH, OUTPUT);
   pinMode(nasos_otop, OUTPUT);
   sensors.begin();
+  EEPROM.begin(sizeof(st_Enum));
+  
+  EEPROM.put(0, eeprom);
+
+
+  eeprom.temp_u = 50;
+  eeprom.temp_u_b = 50;
+  eeprom.temp_off_otop = 35;
+  eeprom.gis_boy = -5;
+  eeprom.heat = true;
+  eeprom.heat_otop = true;
+  eeprom.per_on = 10;
+  eeprom.per_off = 60;
+EEPROM.put(0, eeprom);
+
+   boolean ok2 = EEPROM.commit();
+   Serial.println((ok2) ? "Commit OK" : "Commit failed");
   // EEPROM.begin(512);
   sensors.setResolution(kolThermometer, TEMPERATURE_PRECISION);
   sensors.setResolution(boyThermometer, TEMPERATURE_PRECISION);
@@ -161,7 +189,7 @@ digitalWrite(nasos_otop, LOW);
 
 
 BLYNK_WRITE(V2) {
-  temp_u = param.asFloat();
+ eeprom.temp_u = param.asFloat();
   // EEPROM.write(20, temp_u);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -171,7 +199,7 @@ BLYNK_WRITE(V2) {
 }
 
 BLYNK_WRITE(V4) {
-  temp_u_b = param.asFloat();
+  eeprom.temp_u_b = param.asFloat();
   // EEPROM.write(28, temp_u_b);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -181,7 +209,7 @@ BLYNK_WRITE(V4) {
 }
 
 BLYNK_WRITE(V14) {
-  gis_boy = param.asFloat();
+  eeprom.gis_boy = param.asFloat();
 // EEPROM.write(64, gis_boy);
 // EEPROM.put(60, gis_boy);
   //digitalWrite(ledPin, ledState);
@@ -194,7 +222,7 @@ BLYNK_WRITE(V14) {
 
 
 BLYNK_WRITE(V5) {
-  heat = param.asInt();
+  eeprom.heat = param.asInt();
   // EEPROM.write(44, heat);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -204,7 +232,7 @@ BLYNK_WRITE(V5) {
 }
 
 BLYNK_WRITE(V15) {
-  heat_otop = param.asInt();
+  eeprom.heat_otop = param.asInt();
   // EEPROM.write(52, heat_otop);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -214,7 +242,7 @@ BLYNK_WRITE(V15) {
 }
 
 BLYNK_WRITE(V17) {
-  temp_off_otop = param.asFloat();
+  eeprom.temp_off_otop = param.asFloat();
   // EEPROM.write(60, temp_off_otop);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -225,9 +253,9 @@ BLYNK_WRITE(V17) {
 
 
 BLYNK_WRITE(V7) {
-  per_off = param.asInt();
-  High.OffTime = per_off;
-  Low.OffTime = per_off;
+  eeprom.per_off = param.asInt();
+  High.OffTime = eeprom.per_off;
+  Low.OffTime = eeprom.per_off;
   // EEPROM.write(68, per_off);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -236,9 +264,9 @@ BLYNK_WRITE(V7) {
  // Send();
 }
 BLYNK_WRITE(V8) {
-  per_on = param.asInt();
- High.OnTime = per_on;
- Low.OnTime = per_on;
+  eeprom.per_on = param.asInt();
+ High.OnTime = eeprom.per_on;
+ Low.OnTime = eeprom.per_on;
 // EEPROM.write(76, per_on);
   //digitalWrite(ledPin, ledState);
 //   Serial.print(temp_u);
@@ -282,24 +310,38 @@ return result;
 void loop()
 {
   ArduinoOTA.handle(); // Всегда готовы к прошивке
-  if (Blynk.connected()){ Blynk.run(); Blynk.syncAll(); isFestConnection = false;}
+  if (Blynk.connected()){ 
+    Blynk.run(); 
+   Blynk.syncAll(); 
+   EEPROM.put(0, eeprom);
+   boolean ok2 = EEPROM.commit();
+  //  Serial.println((ok2) ? "Commit OK" : "Commit failed");
+  //  terminal.println((ok2) ? "Commit OK" : "Commit failed");
+  isFestConnection = false;
+  }
+
   if (isFestConnection)
   {
     /* code */
-  temp_u=50;
-  terminal.print("temp_u: "+String(temp_u));
-  temp_u_b=50;
-  terminal.print(" temp__b: "+String(temp_u_b));
-  heat = true;
-  terminal.print("heat: "+String(heat));
-  heat_otop = true;
-  terminal.print("heat_otop: "+String(heat_otop));
-  gis_boy = -5;
-  terminal.print("gisterezis: "+String(gis_boy));
-  temp_off_otop = 35;
-  terminal.print("temp_off: "+String(temp_off_otop));
-  per_off=60;
-  per_on=10;
+    EEPROM.get(0, eeprom);
+  // eeprom.temp_u=50;
+  Serial.print("temp_u: "+String(eeprom.temp_u));
+  // eeprom.temp_u_b=50;
+  Serial.print(" temp__b: "+String(eeprom.temp_u_b));
+  // eeprom.heat = true;
+  Serial.print("heat: "+String(eeprom.heat));
+  // eeprom.heat_otop = true;
+  Serial.print("heat_otop: "+String(eeprom.heat_otop));
+  // eeprom.gis_boy = -5;
+  Serial.print("gisterezis: "+String(eeprom.gis_boy));
+  // eeprom.temp_off_otop = 35;
+  Serial.print("temp_off: "+String(eeprom.temp_off_otop));
+  // eeprom.per_off=60;
+  // eeprom.per_on=10;
+   
+    
+    // terminal.println(eeprom.temp_u);
+    
   }
   timer.run();
  rssi =  map(WiFi.RSSI(), -115, -35, 0, 100);
@@ -330,7 +372,7 @@ void loop()
 
     }
        
-    regulator(T_koll, temp_u_b, T_bat, temp_off_otop);
+    regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 
     
 }

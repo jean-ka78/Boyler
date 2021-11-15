@@ -72,13 +72,13 @@ void regulator(float Temp_kol, float temp_u_b, float temp_b, float temp_off)
     float temp_on;
     temp_on = temp_u_b;
     // bool kran;
-if (heat_otop)
+if (eeprom.heat_otop)
 {
     if (Temp_kol>=temp_off)
 {
 
 
-    digitalWrite(nasos_otop, heat_otop);
+    digitalWrite(nasos_otop, eeprom.heat_otop);
    led5.on();
     // if (Temp_kol<temp_u_b)
     // {
@@ -107,14 +107,14 @@ else if ((High.Kran_State == HIGH) || (Low.Kran_State == LOW))
 }
 else
 {
-heat_otop = LOW;
-digitalWrite(nasos_otop, heat_otop);
+eeprom.heat_otop = LOW;
+digitalWrite(nasos_otop, eeprom.heat_otop);
 led5.off();
 }
 }
 else
 {
-    digitalWrite(nasos_otop, heat_otop);
+    digitalWrite(nasos_otop, eeprom.heat_otop);
     led5.off();
 }
 
