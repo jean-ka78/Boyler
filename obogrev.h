@@ -37,7 +37,7 @@ class Flasher
 //  {
     if((Kran_State == LOW) && (currentMillis - previousMillis >= OnTime*1000))
    {
-     terminal.println("Update+OnTime:"+String(OnTime));
+    //  terminal.print("Update+OnTime:"+String(OnTime));
      Kran_State = HIGH; // выключаем
      previousMillis = currentMillis; // запоминаем момент времени
      digitalWrite(Kran_Pin, Kran_State); // реализуем новое состояние
@@ -49,7 +49,7 @@ class Flasher
    }
    else if ((Kran_State == HIGH) && (currentMillis - previousMillis >= OffTime*1000))
    {
-     terminal.println("Update+OffTime:"+String(OffTime));
+    //  terminal.println(" +OffTime:"+String(OffTime));
      Kran_State = LOW; // включаем
      previousMillis = currentMillis ; // запоминаем момент времени
      digitalWrite(Kran_Pin, Kran_State); // реализуем новое состояние
