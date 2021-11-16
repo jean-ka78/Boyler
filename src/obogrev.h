@@ -19,10 +19,6 @@ class Flasher
    Kran_Pin = pin;
   //  run = Run;
    pinMode(Kran_Pin, OUTPUT);
- 
-//    OnTime = on*1000;
-//    OffTime = off*1000;
- 
    Kran_State = HIGH;
    previousMillis = 0;
   }
@@ -30,8 +26,7 @@ class Flasher
   void Update()
   {
    // выясняем не настал ли момент сменить состояние привода
-//    OnTime = on*1000;
-//    OffTime = off*1000;
+
    unsigned long currentMillis = millis(); // текущее время в миллисекундах
 //  while (run)
 //  {
