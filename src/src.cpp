@@ -104,7 +104,7 @@ digitalWrite(PIN_LOW,HIGH);
 digitalWrite(PIN_HIGH,HIGH);
 digitalWrite(relay,LOW);
 digitalWrite(nasos_otop, LOW);
-}i
+}
 
 
 BLYNK_WRITE(V2) {
