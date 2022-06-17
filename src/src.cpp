@@ -8,6 +8,7 @@
 #include <EEPROM.h>
 #include "NTC.h"
 
+
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFestConnection=true;
