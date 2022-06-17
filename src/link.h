@@ -1,8 +1,8 @@
 #define USE_LOCAL_SERVER
 
 #ifdef USE_LOCAL_SERVER
-      #define SERVER                  IPAddress(192, 168, 1, 14) // Свой IP пишите
-      // #define SERVER                  "greenhouse.net.ua" // Имя своего хоста 
+      // #define SERVER                  IPAddress(192, 168, 1, 14) // Свой IP пишите
+      #define SERVER                  "greenhouse.net.ua" // Имя своего хоста 
 
 #endif
 

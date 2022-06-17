@@ -293,7 +293,8 @@ double Vout, Rt = 0;
 double T, Tc, Tf = 0;
 double adc = 0;
 /*
-Медианный фильтр
+Калмана фильтр
+GKalman testFilter(40, 40, 0.5);
 */
 
 int val[3];
@@ -314,6 +315,7 @@ public:
    
 double Update()
 {
+  GKalman testFilter(40, 0.05);
     adcAverage  = 0;
     adc = 0; 
   for (int i = 0; i < adc_count; i++) 
@@ -324,11 +326,12 @@ double Update()
     // {
       // old_time = real_time;
       adc = analogRead(ntc_pin);
+      // adc = testFilter.filtered(adc);
       adc = ADC_LUT[(int)adc];
       //  Serial.println("adc:"+String(adc));
        adcSamples[i] = adc;  // прочитать значение на выводе и сохранить
       // Serial.println(adcSamples[i]);
-      delay(10);
+      // delay(10);
     // }
   }
 
@@ -346,7 +349,9 @@ double Update()
   Rt = R1 * Vout / (Vs - Vout);
 
   T = 1/(1/To + log(Rt/Ro)/Beta);    // Temperature in Kelvin
+
   Tc = T - 273.15;                   // Celsius
+  Tc = testFilter.filtered(Tc);
   Tf = Tc * 9 / 5 + 32;              // Fahrenheit
   // Serial.println(Tc);
 
@@ -356,7 +361,7 @@ double Update()
 
 double Update_f()
 {
-
+GKalman testFilter(4, 0.005);
 //  adc = 0; 
  // массив для хранения данных
  int middle;
@@ -367,6 +372,7 @@ double Update_f()
   for (int i = 0; i < adc_count; i++){
     //   old_time = real_time;  
     adc = analogRead(ntc_pin);
+    adc = testFilter.filtered(adc);
     raw[i] = ADC_LUT[(int)adc];
     // this_thread 
     delay(10);
@@ -386,7 +392,7 @@ double Update_f()
   }
   // возвращаем значение средней ячейки массива
   middle = raw[adc_count/2];
- 
+  // middle = testFilter.filtered(middle);
   // return middle;
 
 //  Serial.println("adcAverage:"+String(adcAverage));
@@ -397,6 +403,7 @@ double Update_f()
 
   T = 1/(1/To + log(Rt/Ro)/Beta);    // Temperature in Kelvin
   Tc = T - 273.15;                   // Celsius
+  // Tc = testFilter.filtered(Tc);
   Tf = Tc * 9 / 5 + 32;              // Fahrenheit
   // Serial.println(Tc);
 
