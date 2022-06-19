@@ -36,6 +36,7 @@ long rssi;
 unsigned long old_time = 0;
 unsigned long old_time1 = 0;
 unsigned long old_time2 = 0;
+unsigned long old_time3 = 0;
 #include "heat_regul.h"
 #include "obogrev.h"
 
@@ -95,7 +96,7 @@ void setup()
    Serial.println((ok2) ? "Commit OK" : "Commit failed");  
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  timer.setInterval(1200, temp_in);
+  // timer.setInterval(1200, temp_in);
   // timer.setInterval(1000, send_json);
   reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
@@ -190,6 +191,13 @@ timer.run();
       old_time2 = real_time;
       T_boyler = boyler.Update_f();
     }
+
+    if (real_time - old_time3 > 1000)
+    {
+      old_time3 = real_time;
+      temp_in;
+    }
+    
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 }
 
