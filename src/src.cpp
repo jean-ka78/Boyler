@@ -112,7 +112,7 @@ void setup()
    Serial.println((ok2) ? "Commit OK" : "Commit failed");  
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  timer.setInterval(10000, debug);
+  // timer.setInterval(10000, debug);
   // timer.setInterval(1000, send_json);
   reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
