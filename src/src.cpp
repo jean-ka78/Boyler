@@ -195,7 +195,7 @@ timer.run();
     if (real_time - old_time3 > 1000)
     {
       old_time3 = real_time;
-      temp_in;
+      temp_in();
     }
     
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
