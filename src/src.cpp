@@ -13,7 +13,7 @@
 
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
-  bool isFestConnection=true;
+  bool isFirstConnection=true;
 WidgetLED led1(V6), led2(V9), led3(V10), led4(V13), led5(V16);
 WidgetTerminal terminal(V12);
 // ID для таймеров Blynk
@@ -167,26 +167,14 @@ void loop()
    Blynk.syncAll(); 
    EEPROM.put(0, eeprom);
    boolean ok2 = EEPROM.commit();
-   isFestConnection = false;
+   isFirstConnection = false;
   }
 
-  if (isFestConnection)
+  if (isFirstConnection)
   {
     /* code */
   EEPROM.get(0, eeprom);
-  // eeprom.temp_u=50;
-  /*terminal.print("temp_u: "+String(eeprom.temp_u));
-  // eeprom.temp_u_b=50;
-  terminal.print(" temp__b: "+String(eeprom.temp_u_b));
-  // eeprom.heat = true;
-  terminal.print("heat: "+String(eeprom.heat));
-  // eeprom.heat_otop = true;
-  terminal.print("heat_otop: "+String(eeprom.heat_otop));
-  // eeprom.gis_boy = -5;
-  terminal.print("gisterezis: "+String(eeprom.gis_boy));
-  // eeprom.temp_off_otop = 35;
-  terminal.print("temp_off: "+String(eeprom.temp_off_otop));
-*/
+ 
   }
 
 timer.run();
