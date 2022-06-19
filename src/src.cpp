@@ -135,10 +135,10 @@ BLYNK_WRITE(V7) {
   eeprom.per_off = param.asInt();
   High.OffTime = eeprom.per_off;
   Low.OffTime = eeprom.per_off;
- }
+}
 
 BLYNK_WRITE(V8) {
-  eeprom.per_on = param.asInt();
+eeprom.per_on = param.asInt();
  High.OnTime = eeprom.per_on;
  Low.OnTime = eeprom.per_on;
 }
@@ -159,17 +159,17 @@ void loop()
     /* code */
   EEPROM.get(0, eeprom);
   // eeprom.temp_u=50;
-  Serial.print("temp_u: "+String(eeprom.temp_u));
+  terminal.print("temp_u: "+String(eeprom.temp_u));
   // eeprom.temp_u_b=50;
-  Serial.print(" temp__b: "+String(eeprom.temp_u_b));
+  terminal.print(" temp__b: "+String(eeprom.temp_u_b));
   // eeprom.heat = true;
-  Serial.print("heat: "+String(eeprom.heat));
+  terminal.print("heat: "+String(eeprom.heat));
   // eeprom.heat_otop = true;
-  Serial.print("heat_otop: "+String(eeprom.heat_otop));
+  terminal.print("heat_otop: "+String(eeprom.heat_otop));
   // eeprom.gis_boy = -5;
-  Serial.print("gisterezis: "+String(eeprom.gis_boy));
+  terminal.print("gisterezis: "+String(eeprom.gis_boy));
   // eeprom.temp_off_otop = 35;
-  Serial.print("temp_off: "+String(eeprom.temp_off_otop));
+  terminal.print("temp_off: "+String(eeprom.temp_off_otop));
   }
 
 timer.run();

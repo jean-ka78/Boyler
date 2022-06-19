@@ -370,15 +370,12 @@ GKalman testFilter(4, 0.005);
  int middle;
   int raw[adc_count];
   // считываем вход и помещаем величину в ячейки массива 
- 
-
-  for (int i = 0; i < adc_count; i++){
+   for (int i = 0; i < adc_count; i++){
     //   old_time = real_time;  
     // if (millis() - timer1 > 10)
     // {
       /* code */
-    
-    timer1 = millis();
+        timer1 = millis();
     adc = analogRead(ntc_pin);
     // Калмана фильтр запускаем
     adc = testFilter.filtered(adc);
