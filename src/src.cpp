@@ -55,17 +55,17 @@ void temp_in()
 
 void debug()
 {
-  terminal.print("temp_u: "+String(eeprom.temp_u));
+  terminal.println("temp_u: "+String(eeprom.temp_u));
   // eeprom.temp_u_b=50;
-  terminal.print(" temp__b: "+String(eeprom.temp_u_b));
+  terminal.println(" temp__b: "+String(eeprom.temp_u_b));
   // eeprom.heat = true;
-  terminal.print("heat: "+String(eeprom.heat));
+  terminal.println("heat: "+String(eeprom.heat));
   // eeprom.heat_otop = true;
-  terminal.print("heat_otop: "+String(eeprom.heat_otop));
+  terminal.println("heat_otop: "+String(eeprom.heat_otop));
   // eeprom.gis_boy = -5;
-  terminal.print("gisterezis: "+String(eeprom.gis_boy));
+  terminal.println("gisterezis: "+String(eeprom.gis_boy));
   // eeprom.temp_off_otop = 35;
-  terminal.print("temp_off: "+String(eeprom.temp_off_otop));
+  terminal.println("temp_off: "+String(eeprom.temp_off_otop));
 
 }
 
