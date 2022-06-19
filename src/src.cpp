@@ -50,8 +50,24 @@ void temp_in()
    Blynk.virtualWrite(V0, kollektor.Update_f());
    Blynk.virtualWrite(V1, boyler.Update_f());
    Blynk.virtualWrite(V3, bat.Update_f());
+  
 }
 
+void debug()
+{
+  terminal.print("temp_u: "+String(eeprom.temp_u));
+  // eeprom.temp_u_b=50;
+  terminal.print(" temp__b: "+String(eeprom.temp_u_b));
+  // eeprom.heat = true;
+  terminal.print("heat: "+String(eeprom.heat));
+  // eeprom.heat_otop = true;
+  terminal.print("heat_otop: "+String(eeprom.heat_otop));
+  // eeprom.gis_boy = -5;
+  terminal.print("gisterezis: "+String(eeprom.gis_boy));
+  // eeprom.temp_off_otop = 35;
+  terminal.print("temp_off: "+String(eeprom.temp_off_otop));
+
+}
 
 void regul()
 {
@@ -96,7 +112,7 @@ void setup()
    Serial.println((ok2) ? "Commit OK" : "Commit failed");  
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  // timer.setInterval(1200, temp_in);
+  timer.setInterval(10000, debug);
   // timer.setInterval(1000, send_json);
   reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
