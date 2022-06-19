@@ -159,7 +159,7 @@ void loop()
     /* code */
   EEPROM.get(0, eeprom);
   // eeprom.temp_u=50;
-  terminal.print("temp_u: "+String(eeprom.temp_u));
+  /*terminal.print("temp_u: "+String(eeprom.temp_u));
   // eeprom.temp_u_b=50;
   terminal.print(" temp__b: "+String(eeprom.temp_u_b));
   // eeprom.heat = true;
@@ -170,6 +170,7 @@ void loop()
   terminal.print("gisterezis: "+String(eeprom.gis_boy));
   // eeprom.temp_off_otop = 35;
   terminal.print("temp_off: "+String(eeprom.temp_off_otop));
+*/
   }
 
 timer.run();
