@@ -374,8 +374,8 @@ GKalman testFilter(4, 0.005);
 
   for (int i = 0; i < adc_count; i++){
     //   old_time = real_time;  
-    if (millis() - timer1 > 10)
-    {
+    // if (millis() - timer1 > 10)
+    // {
       /* code */
     
     timer1 = millis();
@@ -384,8 +384,8 @@ GKalman testFilter(4, 0.005);
     adc = testFilter.filtered(adc);
     raw[i] = ADC_LUT[(int)adc];
     // this_thread 
-    // delay(10);
-    }
+    delay(10);
+    // }
     }
   
   // сортируем массив по возрастанию значений в ячейках
