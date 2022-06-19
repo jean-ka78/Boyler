@@ -292,6 +292,7 @@ int    adcSamples[50];  // Массив для хранения отдельны
 double Vout, Rt = 0;
 double T, Tc, Tf = 0;
 double adc = 0;
+unsigned long timer1 = 0;
 /*
 Калмана фильтр
 GKalman testFilter(40, 40, 0.5);
@@ -329,7 +330,7 @@ double Update()
       // adc = testFilter.filtered(adc);
       adc = ADC_LUT[(int)adc];
       //  Serial.println("adc:"+String(adc));
-       adcSamples[i] = adc;  // прочитать значение на выводе и сохранить
+      adcSamples[i] = adc;  // прочитать значение на выводе и сохранить
       // Serial.println(adcSamples[i]);
       // delay(10);
     // }
@@ -361,7 +362,9 @@ double Update()
 
 double Update_f()
 {
+  // Калмана фильтр
 GKalman testFilter(4, 0.005);
+
 //  adc = 0; 
  // массив для хранения данных
  int middle;
@@ -371,11 +374,18 @@ GKalman testFilter(4, 0.005);
 
   for (int i = 0; i < adc_count; i++){
     //   old_time = real_time;  
+    if (millis() - timer1 > 10)
+    {
+      /* code */
+    
+    timer1 = millis();
     adc = analogRead(ntc_pin);
+    // Калмана фильтр запускаем
     adc = testFilter.filtered(adc);
     raw[i] = ADC_LUT[(int)adc];
     // this_thread 
-    delay(10);
+    // delay(10);
+    }
     }
   
   // сортируем массив по возрастанию значений в ячейках
