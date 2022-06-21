@@ -12,11 +12,11 @@
 
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
-  bool isFirstConnection=true;
+bool isFirstConnection=true;
 WidgetLED led1(V6), led2(V9), led3(V10), led4(V13), led5(V16);
 WidgetTerminal terminal(V12);
 // ID для таймеров Blynk
-  int IDt_reconnectBlynk; // ID таймера для перезагрузки
+int IDt_reconnectBlynk; // ID таймера для перезагрузки
  
 #include "link.h"
 #include "st_enum.h"
@@ -31,13 +31,9 @@ int PIN_LOW = 22;
 int PIN_HIGH = 23;
 uint32_t tmr;
 bool flag = HIGH;
-
 float T_boyler, T_koll, T_bat;
 long rssi;
-unsigned long old_time = 0;
-unsigned long old_time1 = 0;
-unsigned long old_time2 = 0;
-unsigned long old_time3 = 0;
+unsigned long old_time, old_time1, old_time2, old_time3 = 0;
 #include "heat_regul.h"
 #include "obogrev.h"
 
@@ -51,12 +47,7 @@ void temp_in()
    Blynk.virtualWrite(V0, kollektor.Update_f());
    Blynk.virtualWrite(V1, boyler.Update_f());
    Blynk.virtualWrite(V3, bat.Update_f());
-  
 }
-
-
-
-
 
 void regul()
 {
@@ -75,14 +66,13 @@ digitalWrite(relay,relle);
 
 void setup()
 { 
-   // Debug console
+
   Serial.begin(115200);
   pinMode(relay, OUTPUT);
   pinMode(PIN_LOW, OUTPUT);
   pinMode(PIN_HIGH, OUTPUT);
   pinMode(nasos_otop, OUTPUT);
   EEPROM.begin(sizeof(st_Enum));
-  
   EEPROM.put(0, eeprom);
 // --------------------------------------
 // Заводские настройки 
@@ -150,7 +140,7 @@ BLYNK_WRITE(V7) {
 }
 
 BLYNK_WRITE(V8) {
-eeprom.per_on = param.asInt();
+ eeprom.per_on = param.asInt();
  High.OnTime = eeprom.per_on;
  Low.OnTime = eeprom.per_on;
 }
@@ -168,9 +158,7 @@ void loop()
 
   if (isFirstConnection)
   {
-    /* code */
   EEPROM.get(0, eeprom);
- 
   }
 
 timer.run();
@@ -203,5 +191,3 @@ timer.run();
 Deb_cont();
 
 }
-
-
