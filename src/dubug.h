@@ -21,7 +21,7 @@ void Deb_cont()
     if (deb)
     {
      timer.enable(IDt_debug);
-     timer.restartTimer(IDt_debug);   
+    //  timer.restartTimer(IDt_debug);   
     }
     else
     {
