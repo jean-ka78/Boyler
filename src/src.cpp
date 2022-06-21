@@ -10,7 +10,6 @@
 #include "NTC.h"
 
 
-
 BlynkTimer timer;
 // Первое ли это подключение к Серверу
   bool isFirstConnection=true;
@@ -18,8 +17,10 @@ WidgetLED led1(V6), led2(V9), led3(V10), led4(V13), led5(V16);
 WidgetTerminal terminal(V12);
 // ID для таймеров Blynk
   int IDt_reconnectBlynk; // ID таймера для перезагрузки
+ 
 #include "link.h"
 #include "st_enum.h"
+#include "dubug.h"
 
 int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
 int thermistorPin2 = 32;
@@ -53,21 +54,9 @@ void temp_in()
   
 }
 
-void debug()
-{
-  terminal.println("temp_u: "+String(eeprom.temp_u));
-  // eeprom.temp_u_b=50;
-  terminal.println(" temp__b: "+String(eeprom.temp_u_b));
-  // eeprom.heat = true;
-  terminal.println("heat: "+String(eeprom.heat));
-  // eeprom.heat_otop = true;
-  terminal.println("heat_otop: "+String(eeprom.heat_otop));
-  // eeprom.gis_boy = -5;
-  terminal.println("gisterezis: "+String(eeprom.gis_boy));
-  // eeprom.temp_off_otop = 35;
-  terminal.println("temp_off: "+String(eeprom.temp_off_otop));
 
-}
+
+
 
 void regul()
 {
@@ -109,10 +98,10 @@ void setup()
   // ---------------------------------------
 
    boolean ok2 = EEPROM.commit();
-   Serial.println((ok2) ? "Commit OK" : "Commit failed");  
+   terminal.println((ok2) ? "Commit OK" : "Commit failed");  
   IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
   timer.setInterval(200, regul);
-  // timer.setInterval(10000, debug);
+  IDt_debug = timer.setInterval(10000, debug);
   // timer.setInterval(1000, send_json);
   reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
@@ -144,9 +133,16 @@ BLYNK_WRITE(V15) {
   eeprom.heat_otop = param.asInt();
 }
 
+BLYNK_WRITE(V18) {
+  // eeprom.heat_otop = param.asInt();
+deb = param.asInt();
+}
+
 BLYNK_WRITE(V17) {
   eeprom.temp_off_otop = param.asFloat();
 }
+
+
 BLYNK_WRITE(V7) {
   eeprom.per_off = param.asInt();
   High.OffTime = eeprom.per_off;
@@ -204,6 +200,8 @@ timer.run();
     }
     
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
+Deb_cont();
+
 }
 
 
