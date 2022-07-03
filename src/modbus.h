@@ -1,7 +1,7 @@
 ModbusIP mb;  //ModbusIP object
 
 const int REG = 528;               // Modbus Hreg Offset
-
+int run_mb;
 IPAddress remote(10, 1, 0, 5); 
 void setup_mb ()
 {

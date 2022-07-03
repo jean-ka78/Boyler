@@ -131,6 +131,11 @@ BLYNK_WRITE(V18) {
 deb = param.asInt();
 }
 
+BLYNK_WRITE(V19) {
+  // eeprom.heat_otop = param.asInt();
+run_mb = param.asInt();
+}
+
 BLYNK_WRITE(V17) {
   eeprom.temp_off_otop = param.asFloat();
 }
@@ -189,12 +194,16 @@ timer.run();
       old_time3 = real_time;
       temp_in();
     }
+    
+    if (run_mb)
+    {
+    
     if (real_time - timer4 > 1000)
     {
       timer4 = real_time;
       loop_mb();
     }
-
+    }
 
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 Deb_cont();
