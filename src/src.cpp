@@ -8,6 +8,7 @@
 #include <EEPROM.h>
 #include "GyverFilters.h"
 #include "NTC.h"
+#include <ModbusIP_ESP8266.h>
 
 
 BlynkTimer timer;
@@ -21,6 +22,8 @@ int IDt_reconnectBlynk; // ID таймера для перезагрузки
 #include "link.h"
 #include "st_enum.h"
 #include "dubug.h"
+#include "modbus.h"
+
 
 int thermistorPin1 = 33;// Вход АЦП, выход делителя напряжения
 int thermistorPin2 = 32;
@@ -33,7 +36,7 @@ uint32_t tmr;
 bool flag = HIGH;
 float T_boyler, T_koll, T_bat;
 long rssi;
-unsigned long old_time, old_time1, old_time2, old_time3 = 0;
+unsigned long old_time, old_time1, old_time2, old_time3, timer4;
 #include "heat_regul.h"
 #include "obogrev.h"
 
@@ -66,7 +69,7 @@ digitalWrite(relay,relle);
 
 void setup()
 { 
-
+  setup_mb();
   Serial.begin(115200);
   pinMode(relay, OUTPUT);
   pinMode(PIN_LOW, OUTPUT);
@@ -186,7 +189,13 @@ timer.run();
       old_time3 = real_time;
       temp_in();
     }
-    
+    if (real_time - timer4 > 1000)
+    {
+      timer4 = real_time;
+      loop_mb();
+    }
+
+
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 Deb_cont();
 
