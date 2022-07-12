@@ -14,7 +14,7 @@ void debug()
   terminal.println("gis: "+String(eeprom.gis_boy));
   // eeprom.temp_off_otop = 35;
   terminal.println("temp_off: "+String(eeprom.temp_off_otop));
-terminal.println(WiFi.localIP());
+  terminal.println(WiFi.localIP());
 
 }
 
