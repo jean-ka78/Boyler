@@ -198,7 +198,7 @@ timer.run();
     if (run_mb)
     {
     
-    if (real_time - timer4 > 1000)
+    if (real_time - timer4 > 5000)
     {
       timer4 = real_time;
       loop_mb();
