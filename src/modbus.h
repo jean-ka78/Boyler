@@ -21,5 +21,5 @@ void loop_mb() {
     terminal.println("not connect MB");
     mb.connect(remote);           // Try to connect if no connection
   }
-  delay(10);
+  // delay(10);
 }

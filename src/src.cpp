@@ -177,23 +177,26 @@ timer.run();
     {
       old_time = real_time;
       T_koll = kollektor.Update_f();
-    }
-    if (real_time - old_time1>2000)
-    {
-      old_time1 = real_time;
       T_bat = bat.Update_f();
-    }
-    if (real_time - old_time2>3000)
-    {
-      old_time2 = real_time;
       T_boyler = boyler.Update_f();
-    }
-
-    if (real_time - old_time3 > 1000)
-    {
-      old_time3 = real_time;
       temp_in();
     }
+    // if (real_time - old_time1>2000)
+    // {
+    //   old_time1 = real_time;
+    //   T_bat = bat.Update_f();
+    // }
+    // if (real_time - old_time2>3000)
+    // {
+    //   old_time2 = real_time;
+    //   T_boyler = boyler.Update_f();
+    // }
+
+    // if (real_time - old_time3 > 1000)
+    // {
+    //   old_time3 = real_time;
+    //   temp_in();
+    // }
     
     if (run_mb)
     {
