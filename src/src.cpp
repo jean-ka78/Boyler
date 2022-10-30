@@ -39,7 +39,7 @@ long rssi;
 unsigned long old_time, old_time1, old_time2, old_time3, timer4;
 #include "heat_regul.h"
 #include "obogrev.h"
-
+#include "mqtt.h"
 NTC kollektor(thermistorPin1);
 NTC boyler(thermistorPin2);
 NTC bat(thermistorPin3);
@@ -70,6 +70,7 @@ digitalWrite(relay,relle);
 void setup()
 { 
   setup_mb();
+  setupMqtt();
   Serial.begin(115200);
   pinMode(relay, OUTPUT);
   pinMode(PIN_LOW, OUTPUT);
@@ -204,7 +205,8 @@ timer.run();
     if (real_time - timer4 > 5000)
     {
       timer4 = real_time;
-      loop_mb();
+      // loop_mb();
+      loopMQtt();
     }
     }
 
