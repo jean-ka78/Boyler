@@ -1,6 +1,7 @@
 emelianov/modbus-esp8266@^4.1.0
-paulstoffregen/OneWire@^2.3.5
-milesburton/DallasTemperature@^3.9.1
+knolleary/PubSubClient@^2.8
 gyverlibs/GyverFilters@^3.2
-blynkkk/Blynk@^0.6.7
 bblanchon/ArduinoJson@^6.18.0
+milesburton/DallasTemperature@^3.9.1
+blynkkk/Blynk@^0.6.7
+paulstoffregen/OneWire@^2.3.5
