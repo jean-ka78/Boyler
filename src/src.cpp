@@ -37,14 +37,15 @@ bool flag = HIGH;
 float T_boyler, T_koll, T_bat;
 long rssi;
 unsigned long old_time, old_time1, old_time2, old_time3, timer4;
-#include "heat_regul.h"
-#include "obogrev.h"
-#include "mqtt.h"
 NTC kollektor(thermistorPin1);
 NTC boyler(thermistorPin2);
 NTC bat(thermistorPin3);
-// #include "json.h"
+#include "heat_regul.h"
+#include "obogrev.h"
 
+
+// #include "json.h"
+#include "mqtt.h"
 void temp_in()
 {
    Blynk.virtualWrite(V0, kollektor.Update_f());

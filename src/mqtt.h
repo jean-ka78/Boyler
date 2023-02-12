@@ -41,11 +41,11 @@ void setupMqtt() {
 void loopMQtt() {
   
   char msg[6];                                            // забераем температуру и конвертируем её в char
-  float tmpin = T_koll;
+  float tmpin = kollektor.Update_f();
   dtostrf(tmpin, 4, 2, msg);
 
   char msg1[6];                                            // забераем температуру и конвертируем её в char
-  float tmp_out = T_bat;
+  float tmp_out = bat.Update_f();
   dtostrf(tmp_out, 4, 2, msg1);
 
   char msg2[6];                                            // забераем температуру и конвертируем её в char
@@ -53,7 +53,7 @@ void loopMQtt() {
   dtostrf(lux_in, 4, 2, msg2);
 
   char msg3[6];                                            // забераем температуру и конвертируем её в char
-  float temp_boy =T_boyler;
+  float temp_boy = boyler.Update_f();
   dtostrf(temp_boy, 4, 2, msg3);
  
   
