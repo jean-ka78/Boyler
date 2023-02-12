@@ -51,6 +51,10 @@ void loopMQtt() {
   char msg2[6];                                            // забераем температуру и конвертируем её в char
   float lux_in = rssi;
   dtostrf(lux_in, 4, 2, msg2);
+
+  char msg3[6];                                            // забераем температуру и конвертируем её в char
+  float temp_boy =T_boyler;
+  dtostrf(temp_boy, 4, 2, msg3);
  
   
 
@@ -62,10 +66,12 @@ void loopMQtt() {
   client.loop();
 
   long now = millis();                                   // каждые 10 секунд
-  if (now - lastMsg > 5000) {
+  if (now - lastMsg > 1000) {
     lastMsg = now; 
-    client.publish("Температура koll", msg);                     // пишем в топик 
-    client.publish("Температура bat", msg1);
-    client.publish("WiFi", msg2);
+    client.publish("/home/temp_koll", msg);                     // пишем в топик 
+    client.publish("/home/temp_bat", msg1);
+    client.publish("/home/WiFi", msg2);
+    client.publish("/home/temp_boy", msg3);
+    
   }
 }
