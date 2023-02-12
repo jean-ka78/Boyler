@@ -1,9 +1,9 @@
 #include <PubSubClient.h>
 //MQTT Server
-const char *mqtt_server = "m16.cloudmqtt.com"; // Имя сервера MQTT
-const int mqtt_port = 17031; // Порт для подключения к серверу MQTT
-const char *mqtt_user = "lfrykgia"; // Логин от сервер
-const char *mqtt_pass = "NUiR-ofMbYzC"; // Пароль от сервера
+const char *mqtt_server = "greenhouse.net.ua"; // Имя сервера MQTT
+const int mqtt_port = 1883; // Порт для подключения к серверу MQTT
+const char *mqtt_user = "mqtt"; // Логин от сервер
+const char *mqtt_pass = "qwerty"; // Пароль от сервера
 
 
 unsigned long oldmillis;
@@ -64,8 +64,8 @@ void loopMQtt() {
   long now = millis();                                   // каждые 10 секунд
   if (now - lastMsg > 5000) {
     lastMsg = now; 
-    client.publish("Температура внут", msg);                     // пишем в топик 
-    client.publish("Температура внеш", msg1);
-    client.publish("Свет", msg2);
+    client.publish("Температура koll", msg);                     // пишем в топик 
+    client.publish("Температура bat", msg1);
+    client.publish("WiFi", msg2);
   }
 }
