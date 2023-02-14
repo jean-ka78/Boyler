@@ -9,6 +9,8 @@ const char* serverName = "http://bfcloud.space/connector/http-api/";
 // 
 String httpPostRequest(const char* serverName, String httpRequestData) {
   HTTPClient http;
+  const size_t capacity_post = JSON_ARRAY_SIZE(7) + JSON_OBJECT_SIZE(1) + 7*JSON_OBJECT_SIZE(2);
+DynamicJsonDocument doc_post(capacity_post);
     
   // Your IP address with path or Domain name with URL path 
   http.begin(serverName);
@@ -39,21 +41,20 @@ http.addHeader("Content-Type",  "application/json");
 
 void send_json(){
   
-const size_t capacity_post = JSON_ARRAY_SIZE(7) + JSON_OBJECT_SIZE(1) + 7*JSON_OBJECT_SIZE(2);
-DynamicJsonDocument doc_post(capacity_post);
+
 
 JsonArray tags = doc_post.createNestedArray("tags");
 JsonObject tags_0 = tags.createNestedObject();
 tags_0["id"] = 14;
-tags_0["value"] = T_koll;
+tags_0["value"] = kollektor.Update_f();
 
 JsonObject tags_1 = tags.createNestedObject();
 tags_1["id"] = 15;
-tags_1["value"] = T_boyler;
+tags_1["value"] = boyler.Update_f();
 
 JsonObject tags_2 = tags.createNestedObject();
 tags_2["id"] = 16;
-tags_2["value"] = T_bat;
+tags_2["value"] = bat.Update_f();
 
 // JsonObject tags_3 = tags.createNestedObject();
 // tags_3["id"] = 4;
@@ -73,6 +74,6 @@ tags_2["value"] = T_bat;
 String output;
 serializeJson(doc_post, output);
 //  Serial.println(output);
-httpPostRequest(serverName ,output);
+// httpPostRequest(serverName ,output);
 
  }
