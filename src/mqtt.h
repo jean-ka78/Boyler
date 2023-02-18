@@ -45,9 +45,9 @@ void setupMqtt() {
 void loopMQtt() {
   JsonArray tags = doc_post.createNestedArray("tags");
 JsonObject tags_0 = tags.createNestedObject();
-// tags_0["id"] = 14;
+// 
 tags_0["koll"] = kollektor.Update_f();
-
+tags_0["RSS"] = rssi;
 JsonObject tags_1 = tags.createNestedObject();
 // tags_1["id"] = 15;
 tags_1["boy"] = boyler.Update_f();
