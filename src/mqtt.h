@@ -18,16 +18,16 @@ PubSubClient client(espClient);
 long lastMsg = 0;  
                                                     // вызывается когда приходят данные от брокера
 void callback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Message arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Message: ");
+  terminal.print("Message arrived on topic: ");
+  terminal.print(topic);
+  terminal.print(". Message: ");
   String messageTemp;
   
   for (int i = 0; i < length; i++) {
-    Serial.print((char)message[i]);
+    terminal.print((char)message[i]);
     messageTemp += (char)message[i];
   }
-  Serial.println();
+  terminal.println();
 
   if (String(topic) == inTopic) {
     if(messageTemp == "ON"){
