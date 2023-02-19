@@ -28,7 +28,7 @@ void Deb_cont()
     else
     {
             timer.disable(IDt_debug);
-            terminal.clear();
+            // terminal.clear();
 
     }
 }
