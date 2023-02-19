@@ -9,58 +9,51 @@ const int mqtt_port = 1883; // Порт для подключения к сер�
 const char *mqtt_user = "mqtt_boyler"; // Логин от сервер
 const char *mqtt_pass = "qwerty"; // Пароль от сервера
 
+#define state_topic "/home/boy_on/state" 
+#define inTopic "/home/boy_on"
 
 unsigned long oldmillis;
 WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;  
                                                     // вызывается когда приходят данные от брокера
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback(char* topic, byte* message, unsigned int length) {
+  Serial.print("Message arrived on topic: ");
+  Serial.print(topic);
+  Serial.print(". Message: ");
   String messageTemp;
-  terminal.print("Message arrived [");
- terminal.print(topic);                              // отправляем в монитор порта название топика                     
- terminal.println("] ");
-  for (int i = 0; i < length; i++) {                // отправляем данные из топика
-    terminal.print((char)payload[i]);
+  
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)message[i]);
+    messageTemp += (char)message[i];
   }
-  if (String(topic) == "/home/boy_on") {
-    if(messageTemp == "1"){
-      terminal.print("Changing output to ON\n");
+  Serial.println();
+
+  if (String(topic) == inTopic) {
+    if(messageTemp == "ON"){
       // digitalWrite(OutputPin, LOW);   //Invertiertes Signal
       eeprom.heat = 1;
+      client.publish(state_topic, "ON");
+      Blynk.virtualWrite(V5,eeprom.heat);
       // client.publish(state_topic, "ON");
       delay(200);
     }
-    else if(messageTemp == "0"){
+    else if(messageTemp == "OFF"){
       // Serial.print("Changing output to OFF\n");
       // digitalWrite(OutputPin, HIGH);  //Invertiertes Signal
       // client.publish(state_topic, "OFF"); 
+      client.publish(state_topic, "OFF"); 
       eeprom.heat = 0;
+      Blynk.virtualWrite(V5,eeprom.heat);
+
+
       delay(200);
     }
-  }
-  //Serial.println();  
-}
-                                               // подключение к mqtt брокеру            
-void reconnect() {                                                      
-unsigned long ms=millis();
-   if(ms - oldmillis > 1000) {
-    oldmillis = ms;                                                       // подключаемся, в client.connect передаем ID, логин и пасс
-    if (client.connect("arduinoClient", mqtt_user, mqtt_pass)) {
-     
-      
-    } 
-   }
-}
 
-void setupMqtt() {  
-  
-  client.setServer(mqtt_server, mqtt_port);           // указываем адрес брокера и порт
-  client.setCallback(callback); 
-  // указываем функцию которая вызывается когда приходят данные от брокера
-}
-void loopMQtt() {
-JsonArray tags = doc_post.createNestedArray("tags");
+
+  }
+  //Serial.println();
+  JsonArray tags = doc_post.createNestedArray("tags");
 JsonObject tags_0 = tags.createNestedObject();
 
 tags_0["koll"] = kollektor.Update_f();
@@ -78,6 +71,29 @@ tags_2["bat"] = bat.Update_f();
 
 char output[256];
 size_t n = serializeJson(doc_post, output);
+client.publish("/home/temp_json", output,n);
+doc_post.clear();
+}
+                                               // подключение к mqtt брокеру            
+void reconnect() {                                                      
+unsigned long ms=millis();
+   if(ms - oldmillis > 1000) {
+    oldmillis = ms;                                                       // подключаемся, в client.connect передаем ID, логин и пасс
+    if (client.connect("arduinoClient", mqtt_user, mqtt_pass)) {
+     client.subscribe(inTopic);
+      
+    } 
+   }
+}
+
+void setupMqtt() {  
+  
+  client.setServer(mqtt_server, mqtt_port);           // указываем адрес брокера и порт
+  client.setCallback(callback); 
+  // указываем функцию которая вызывается когда приходят данные от брокера
+}
+void loopMQtt() {
+
 // terminal.println(output);
 
   // char msg[6];                                            // забераем температуру и конвертируем её в char
@@ -91,20 +107,7 @@ size_t n = serializeJson(doc_post, output);
   // char msg2[6];                                            // забераем температуру и конвертируем её в char
   // float lux_in = rssi;
   // dtostrf(lux_in, 4, 2, msg2);
-  bool heat;
-
-if (eeprom.heat == 1)
-{
-  heat = 1;
-}
-else
-{
-  heat = 0;
-}
-  char msg3[6];                                            // забераем температуру и конвертируем её в char
-  bool temp_boy = heat;
-  dtostrf(temp_boy, 4, 2, msg3);
- 
+  
   
    
   if (!client.connected()) {                             // проверяем подключение к брокеру
@@ -119,16 +122,16 @@ else
     // doc_post.clear();
 
 
-  long now = millis();                                   // каждые 10 секунд
-  if (now - lastMsg > 1000) {
-    lastMsg = now; 
-    client.publish("/home/temp_json", output,n);
+  // long now = millis();                                   // каждые 10 секунд
+  // if (now - lastMsg > 1000) {
+  //   lastMsg = now; 
+    
     // client.publish("/home/temp_koll", msg);                     // пишем в топик 
     // client.publish("/home/temp_bat", msg1);
-    // client.publish("/home/WiFi", msg2);
-    client.publish("/home/boy_on", msg3);
-    client.subscribe("/home/boy_on");
-    doc_post.clear();
-      }
-      
+    // // client.publish("/home/WiFi", msg2);
+    // client.publish("/home/boy_on", msg3);
+    // client.subscribe("/home/boy_on");
+    
 }
+      
+
