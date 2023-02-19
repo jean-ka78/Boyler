@@ -217,7 +217,7 @@ timer.run();
     if (real_time - timer4 > 5000)
     {
       timer4 = real_time;
-      // loop_mb();
+      getValues();
       // loopMQtt();
     }
     }
