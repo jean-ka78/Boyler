@@ -122,7 +122,15 @@ BLYNK_WRITE(V14) {
 
 BLYNK_WRITE(V5) {
   eeprom.heat = param.asInt();
-  client.publish(state_topic, "ON");
+  if (eeprom.heat)
+  {
+    client.publish(state_topic, "ON");
+  }
+  else
+  {
+    client.publish(state_topic, "OFF");
+  }
+  
 }
 
 BLYNK_WRITE(V15) {
