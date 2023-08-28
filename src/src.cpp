@@ -139,12 +139,12 @@ BLYNK_WRITE(V15) {
   eeprom.heat_otop = param.asInt();
   if (param.asInt())
   {
-    client.publish(state_kol, "KolON");
+    client.publish(state_topic, "KolON");
     // client.publish(inTopic, "ON");
   }
   else
   {
-    client.publish(state_kol, "KolOFF");
+    client.publish(state_topic, "KolOFF");
     // client.publish(inTopic, "OFF");
   }
 }

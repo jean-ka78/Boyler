@@ -11,8 +11,8 @@ const char *mqtt_pass = "qwerty"; // Пароль от сервера
 
 #define state_topic "/home/boy_on/state" 
 #define inTopic "/home/boy_on"
-#define state_kol "/home/kol_on/state"
-#define inKol "/home/kol_on"
+// #define state_kol "/home/kol_on/state"
+// #define inKol "/home/kol_on"
 
 float temp = 0.00;
 float hum = 0.00;
@@ -31,76 +31,77 @@ void callback(char* topic, byte* message, unsigned int length) {
   terminal.print("Message arrived on topic: ");
   terminal.print(topic);
   terminal.print(". Message: ");
-  // String messageTemp;
-  char messageTemp;
+  String messageTemp;
+  // char messageTemp;
   for (int i = 0; i < length; i++) {
     terminal.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   terminal.println();
-switch (messageTemp)
-{
-case 'ON':
-  /* code */
-      eeprom.heat = 1;
-      client.publish(state_topic, "ON");
-      Blynk.virtualWrite(V5,eeprom.heat);
-  break;
-case 'OFF':
-      client.publish(state_topic, "OFF"); 
-      eeprom.heat = 0;
-      Blynk.virtualWrite(V5,eeprom.heat);
-  break;
-case 'KolON':
-      eeprom.heat_otop = 1;
-      client.publish(state_kol, "KolON");
-      Blynk.virtualWrite(V15,eeprom.heat_otop);
-  break;
-case 'KolOFF':
-      client.publish(state_kol, "KolOFF"); 
-      eeprom.heat_otop = 0;
-      Blynk.virtualWrite(V15,eeprom.heat_otop);
-  break;
-default:
-  break;
-}
-
-//   if (String(topic) == inTopic) {
-//     if(messageTemp == "ON"){
-//             eeprom.heat = 1;
+// switch String(topic)
+// {
+// case 'ON':
+//   /* code */
+//       eeprom.heat = 1;
 //       client.publish(state_topic, "ON");
 //       Blynk.virtualWrite(V5,eeprom.heat);
-     
-//       delay(100);
-//     }
-//     else if(messageTemp == "OFF"){
-      
+//   break;
+// case 'OFF':
 //       client.publish(state_topic, "OFF"); 
 //       eeprom.heat = 0;
 //       Blynk.virtualWrite(V5,eeprom.heat);
-
-
-//       delay(100);
-//     }
-  
-//    if (String(topic) == inKol) {
-//     if(messageTemp == "KolON"){
-//             eeprom.heat_otop = 1;
+//   break;
+// case 'KolON':
+//       eeprom.heat_otop = 1;
 //       client.publish(state_kol, "KolON");
 //       Blynk.virtualWrite(V15,eeprom.heat_otop);
-     
-//       delay(100);
-//     }
-//     else if(messageTemp == "KolOFF"){
-      
+//   break;
+// case 'KolOFF':
 //       client.publish(state_kol, "KolOFF"); 
-//             eeprom.heat_otop = 0;
+//       eeprom.heat_otop = 0;
 //       Blynk.virtualWrite(V15,eeprom.heat_otop);
-// terminal.print(messageTemp);
-//       delay(100);
-//     }
+//   break;
+// default:
+// terminal.print("Case: ");
+// terminal.println(messageTemp);
+//   break;
+// }
+
+  if (String(topic) == inTopic) {
+    if(messageTemp == "ON"){
+            eeprom.heat = 1;
+      client.publish(state_topic, "ON");
+      Blynk.virtualWrite(V5,eeprom.heat);
+     
+      delay(100);
+    }
+    if(messageTemp == "OFF"){
+      
+      client.publish(state_topic, "OFF"); 
+      eeprom.heat = 0;
+      Blynk.virtualWrite(V5,eeprom.heat);
+
+
+      delay(100);
+    }
+   
+    if(messageTemp == "KolON"){
+            eeprom.heat_otop = 1;
+      client.publish(state_topic, "KolON");
+      Blynk.virtualWrite(V15,eeprom.heat_otop);
+     
+      delay(100);
+    }
+    if(messageTemp == "KolOFF"){
+      
+      client.publish(state_topic, "KolOFF"); 
+            eeprom.heat_otop = 0;
+      Blynk.virtualWrite(V15,eeprom.heat_otop);
+terminal.print(messageTemp);
+      delay(100);
+    }
   }
-  
+  }
 
   
 
@@ -111,7 +112,7 @@ unsigned long ms=millis();
     oldmillis = ms;                                                       // подключаемся, в client.connect передаем ID, логин и пасс
     if (client.connect("arduinoClient", mqtt_user, mqtt_pass)) {
      client.subscribe(inTopic);
-     client.subscribe(inKol);
+    //  client.subscribe(inKol);
       
     } 
    }
