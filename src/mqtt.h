@@ -57,7 +57,7 @@ void callback(char* topic, byte* message, unsigned int length) {
       delay(100);
     }
   
-  else if (String(topic) == inKol) {
+   if (String(topic) == inKol) {
     if(messageTemp == "KolON"){
             eeprom.heat_otop = 1;
       client.publish(state_kol, "KolON");
