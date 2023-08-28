@@ -45,37 +45,37 @@ void callback(char* topic, byte* message, unsigned int length) {
       client.publish(state_topic, "ON");
       Blynk.virtualWrite(V5,eeprom.heat);
      
-      delay(200);
+      delay(100);
     }
-    if(messageTemp == "OFF"){
+    else if(messageTemp == "OFF"){
       
       client.publish(state_topic, "OFF"); 
       eeprom.heat = 0;
       Blynk.virtualWrite(V5,eeprom.heat);
 
 
-      delay(200);
+      delay(100);
     }
-  }
-  if (String(topic) == inKol) {
+  
+  else if (String(topic) == inKol) {
     if(messageTemp == "KolON"){
             eeprom.heat_otop = 1;
       client.publish(state_kol, "KolON");
       Blynk.virtualWrite(V15,eeprom.heat_otop);
      
-      delay(200);
+      delay(100);
     }
-    if(messageTemp == "KolOFF"){
+    else if(messageTemp == "KolOFF"){
       
       client.publish(state_kol, "KolOFF"); 
             eeprom.heat_otop = 0;
       Blynk.virtualWrite(V15,eeprom.heat_otop);
 terminal.print(messageTemp);
-      delay(200);
+      delay(100);
     }
   }
   }
-
+}
   
 
                                                // подключение к mqtt брокеру            
