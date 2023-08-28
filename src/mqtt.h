@@ -31,52 +31,77 @@ void callback(char* topic, byte* message, unsigned int length) {
   terminal.print("Message arrived on topic: ");
   terminal.print(topic);
   terminal.print(". Message: ");
-  String messageTemp;
-  
+  // String messageTemp;
+  char messageTemp;
   for (int i = 0; i < length; i++) {
     terminal.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   terminal.println();
-
-
-  if (String(topic) == inTopic) {
-    if(messageTemp == "ON"){
-            eeprom.heat = 1;
+switch (messageTemp)
+{
+case 'ON':
+  /* code */
+      eeprom.heat = 1;
       client.publish(state_topic, "ON");
       Blynk.virtualWrite(V5,eeprom.heat);
-     
-      delay(100);
-    }
-    else if(messageTemp == "OFF"){
-      
+  break;
+case 'OFF':
       client.publish(state_topic, "OFF"); 
       eeprom.heat = 0;
       Blynk.virtualWrite(V5,eeprom.heat);
-
-
-      delay(100);
-    }
-  
-   if (String(topic) == inKol) {
-    if(messageTemp == "KolON"){
-            eeprom.heat_otop = 1;
+  break;
+case 'KolON':
+      eeprom.heat_otop = 1;
       client.publish(state_kol, "KolON");
       Blynk.virtualWrite(V15,eeprom.heat_otop);
-     
-      delay(100);
-    }
-    else if(messageTemp == "KolOFF"){
-      
+  break;
+case 'KolOFF':
       client.publish(state_kol, "KolOFF"); 
-            eeprom.heat_otop = 0;
+      eeprom.heat_otop = 0;
       Blynk.virtualWrite(V15,eeprom.heat_otop);
-terminal.print(messageTemp);
-      delay(100);
-    }
-  }
-  }
+  break;
+default:
+  break;
 }
+
+//   if (String(topic) == inTopic) {
+//     if(messageTemp == "ON"){
+//             eeprom.heat = 1;
+//       client.publish(state_topic, "ON");
+//       Blynk.virtualWrite(V5,eeprom.heat);
+     
+//       delay(100);
+//     }
+//     else if(messageTemp == "OFF"){
+      
+//       client.publish(state_topic, "OFF"); 
+//       eeprom.heat = 0;
+//       Blynk.virtualWrite(V5,eeprom.heat);
+
+
+//       delay(100);
+//     }
+  
+//    if (String(topic) == inKol) {
+//     if(messageTemp == "KolON"){
+//             eeprom.heat_otop = 1;
+//       client.publish(state_kol, "KolON");
+//       Blynk.virtualWrite(V15,eeprom.heat_otop);
+     
+//       delay(100);
+//     }
+//     else if(messageTemp == "KolOFF"){
+      
+//       client.publish(state_kol, "KolOFF"); 
+//             eeprom.heat_otop = 0;
+//       Blynk.virtualWrite(V15,eeprom.heat_otop);
+// terminal.print(messageTemp);
+//       delay(100);
+//     }
+  }
+  
+
   
 
                                                // подключение к mqtt брокеру            
