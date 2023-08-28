@@ -39,6 +39,7 @@ void callback(char* topic, byte* message, unsigned int length) {
   }
   terminal.println();
 
+
   if (String(topic) == inTopic) {
     if(messageTemp == "ON"){
             eeprom.heat = 1;
