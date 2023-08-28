@@ -11,6 +11,9 @@ const char *mqtt_pass = "qwerty"; // Пароль от сервера
 
 #define state_topic "/home/boy_on/state" 
 #define inTopic "/home/boy_on"
+#define state_kol "/home/kol_on/state"
+#define inKol "/home/kol_on"
+
 float temp = 0.00;
 float hum = 0.00;
 float tempDiff = 0.2;
@@ -44,7 +47,7 @@ void callback(char* topic, byte* message, unsigned int length) {
      
       delay(200);
     }
-    else if(messageTemp == "OFF"){
+    if(messageTemp == "OFF"){
       
       client.publish(state_topic, "OFF"); 
       eeprom.heat = 0;
@@ -53,11 +56,28 @@ void callback(char* topic, byte* message, unsigned int length) {
 
       delay(200);
     }
-
-
   }
+  if (String(topic) == inKol) {
+    if(messageTemp == "KolON"){
+            eeprom.heat_otop = 1;
+      client.publish(state_kol, "KolON");
+      Blynk.virtualWrite(V15,eeprom.heat_otop);
+     
+      delay(200);
+    }
+    if(messageTemp == "KolOFF"){
+      
+      client.publish(state_kol, "KolOFF"); 
+            eeprom.heat_otop = 0;
+      Blynk.virtualWrite(V15,eeprom.heat_otop);
+terminal.print(messageTemp);
+      delay(200);
+    }
+  }
+  }
+
   
-}
+
                                                // подключение к mqtt брокеру            
 void reconnect() {                                                      
 unsigned long ms=millis();
@@ -65,6 +85,7 @@ unsigned long ms=millis();
     oldmillis = ms;                                                       // подключаемся, в client.connect передаем ID, логин и пасс
     if (client.connect("arduinoClient", mqtt_user, mqtt_pass)) {
      client.subscribe(inTopic);
+     client.subscribe(inKol);
       
     } 
    }
