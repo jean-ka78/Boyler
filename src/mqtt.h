@@ -70,7 +70,7 @@ void callback(char* topic, byte* message, unsigned int length) {
       client.publish(state_topic, "KolOFF"); 
             eeprom.heat_otop = 0;
       Blynk.virtualWrite(V15,eeprom.heat_otop);
-terminal.print(messageTemp);
+      terminal.print(messageTemp);
       delay(100);
     }
   }
@@ -78,7 +78,11 @@ terminal.print(messageTemp);
   if (strcmp(topic, "/home/ustavka/boy") != 0){
     float temp_boy = messageTemp.toFloat();
     eeprom.temp_u = temp_boy;
-    
+    Blynk.virtualWrite(V4,eeprom.temp_u);
+    terminal.println(eeprom.temp_u);
+  }
+  else {
+      terminal.println("Not working");
   }
   }
 

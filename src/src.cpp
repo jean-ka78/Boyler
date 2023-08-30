@@ -111,6 +111,9 @@ digitalWrite(nasos_otop, LOW);
 BLYNK_WRITE(V2) {
   // Уставка бойлера
  eeprom.temp_u = param.asFloat();
+ char temp[10];
+ sprintf(temp, "%4.1f", eeprom.temp_u);
+ client.publish("/home/ustavka/boy", temp, true);
  
 }
 
@@ -188,7 +191,7 @@ void loop()
   ArduinoOTA.handle(); // Всегда готовы к прошивке
   if (Blynk.connected()){ 
    Blynk.run(); 
-   Blynk.syncAll(); 
+   
    EEPROM.put(0, eeprom);
    boolean ok2 = EEPROM.commit();
    isFirstConnection = false;
@@ -197,6 +200,9 @@ void loop()
   if (isFirstConnection)
   {
   EEPROM.get(0, eeprom);
+  if (Blynk.connected()){ 
+Blynk.syncAll(); 
+  }
   }
 
 timer.run();
