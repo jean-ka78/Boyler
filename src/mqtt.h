@@ -38,34 +38,7 @@ void callback(char* topic, byte* message, unsigned int length) {
     messageTemp += (char)message[i];
   }
   terminal.println();
-// switch String(topic)
-// {
-// case 'ON':
-//   /* code */
-//       eeprom.heat = 1;
-//       client.publish(state_topic, "ON");
-//       Blynk.virtualWrite(V5,eeprom.heat);
-//   break;
-// case 'OFF':
-//       client.publish(state_topic, "OFF"); 
-//       eeprom.heat = 0;
-//       Blynk.virtualWrite(V5,eeprom.heat);
-//   break;
-// case 'KolON':
-//       eeprom.heat_otop = 1;
-//       client.publish(state_kol, "KolON");
-//       Blynk.virtualWrite(V15,eeprom.heat_otop);
-//   break;
-// case 'KolOFF':
-//       client.publish(state_kol, "KolOFF"); 
-//       eeprom.heat_otop = 0;
-//       Blynk.virtualWrite(V15,eeprom.heat_otop);
-//   break;
-// default:
-// terminal.print("Case: ");
-// terminal.println(messageTemp);
-//   break;
-// }
+
 
   if (String(topic) == inTopic) {
     if(messageTemp == "ON"){
@@ -100,6 +73,12 @@ void callback(char* topic, byte* message, unsigned int length) {
 terminal.print(messageTemp);
       delay(100);
     }
+  }
+
+  if (strcmp(topic, "/home/ustavka/boy") != 0){
+    float temp_boy = messageTemp.toFloat();
+    eeprom.temp_u = temp_boy;
+    
   }
   }
 
