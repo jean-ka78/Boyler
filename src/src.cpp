@@ -109,14 +109,18 @@ digitalWrite(nasos_otop, LOW);
 
 
 BLYNK_WRITE(V2) {
+  // Уставка бойлера
  eeprom.temp_u = param.asFloat();
+ 
 }
 
 BLYNK_WRITE(V4) {
+  // Уставка опалення
   eeprom.temp_u_b = param.asFloat();
 }
 
 BLYNK_WRITE(V14) {
+  // Гістерезіс бойлера
   eeprom.gis_boy = param.asFloat();
 }
 
@@ -160,17 +164,20 @@ run_mb = param.asInt();
 }
 
 BLYNK_WRITE(V17) {
+  // Мінімальна температура відключення опалення
   eeprom.temp_off_otop = param.asFloat();
 }
 
 
 BLYNK_WRITE(V7) {
+  // Цикл опалення
   eeprom.per_off = param.asInt();
   High.OffTime = eeprom.per_off;
   Low.OffTime = eeprom.per_off;
 }
 
 BLYNK_WRITE(V8) {
+  // імпульс опалення
  eeprom.per_on = param.asInt();
  High.OnTime = eeprom.per_on;
  Low.OnTime = eeprom.per_on;
