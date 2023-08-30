@@ -28,19 +28,23 @@ PubSubClient client(espClient);
 long lastMsg = 0;  
                                                     // вызывается когда приходят данные от брокера
 void callback(char* topic, byte* message, unsigned int length) {
-  terminal.print("Message arrived on topic: ");
-  terminal.print(topic);
-  terminal.print(". Message: ");
-  String messageTemp;
+  // terminal.print("Message arrived on topic: ");
+  // terminal.print(topic);
+  // terminal.print(". Message: ");
+message[length] = '\0';
+  String messageTemp = (char*)message;
+  // String messageTemp;
   // char messageTemp;
-  for (int i = 0; i < length; i++) {
-    terminal.print((char)message[i]);
-    messageTemp += (char)message[i];
-  }
-  terminal.println();
+  // for (int i = 0; i < length; i++) {
+  //   terminal.print((char)message[i]);
+  //   messageTemp += (char)message[i];
+  // }
+  // terminal.println();
 
 
-  if (String(topic) == inTopic) {
+  if (String(topic) == inTopic) 
+  // if (strcmp(topic,state_topic))
+  {
     if(messageTemp == "ON"){
             eeprom.heat = 1;
       client.publish(state_topic, "ON");
@@ -73,9 +77,7 @@ void callback(char* topic, byte* message, unsigned int length) {
       terminal.print(messageTemp);
       delay(100);
     }
-  }
-
-  if (strcmp(topic, "/home/ustavka/boy") != 0){
+  }  else if (strcmp(topic, "/home/ustavka/boy") == 0){
     float temp_boy = messageTemp.toFloat();
     eeprom.temp_u = temp_boy;
     Blynk.virtualWrite(V4,eeprom.temp_u);
