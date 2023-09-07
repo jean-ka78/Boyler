@@ -75,9 +75,11 @@ message[length] = '\0';
             eeprom.heat_otop = 0;
       Blynk.virtualWrite(V15,eeprom.heat_otop);
       terminal.print(messageTemp);
-      delay(100);
+      // delay(100);
+      
     }
-  }  else if (strcmp(topic, "/home/ustavka/boy") == 0){
+    return;
+  }  else if (String(topic) ==  "/home/boy_on/ustavka/boy"){
     float temp_boy = messageTemp.toFloat();
     eeprom.temp_u = temp_boy;
     Blynk.virtualWrite(V4,eeprom.temp_u);

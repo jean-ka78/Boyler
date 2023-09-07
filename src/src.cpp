@@ -113,7 +113,7 @@ BLYNK_WRITE(V2) {
  eeprom.temp_u = param.asFloat();
  char temp[10];
  sprintf(temp, "%4.1f", eeprom.temp_u);
- client.publish("/home/ustavka/boy", temp, true);
+ client.publish("/home/boy_on/ustavka/boy", temp, true);
  
 }
 
@@ -234,8 +234,7 @@ timer.run();
     //   temp_in();
     // }
     
-    if (run_mb)
-    {
+    // if (run_mb)    {
     loopMQtt();
     if (real_time - timer4 > 5000)
     {
@@ -243,7 +242,7 @@ timer.run();
       getValues();
       // loopMQtt();
     }
-    }
+    // }
 
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 Deb_cont();
