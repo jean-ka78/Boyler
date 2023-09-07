@@ -10,7 +10,7 @@ const char *mqtt_user = "mqtt_boyler"; // Логин от сервер
 const char *mqtt_pass = "qwerty"; // Пароль от сервера
 
 #define state_topic "/home/boy_on/state" 
-#define inTopic "/home/boy_on"
+#define inTopic "/home/#"
 // #define state_kol "/home/kol_on/state"
 // #define inKol "/home/kol_on"
 
@@ -27,67 +27,53 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;  
                                                     // вызывается когда приходят данные от брокера
-void callback(char* topic, byte* message, unsigned int length) {
+void callback(char* topic, byte* payload, unsigned int length) {
   // terminal.print("Message arrived on topic: ");
   // terminal.print(topic);
   // terminal.print(". Message: ");
-message[length] = '\0';
-  String messageTemp = (char*)message;
-  // String messageTemp;
-  // char messageTemp;
-  // for (int i = 0; i < length; i++) {
-  //   terminal.print((char)message[i]);
-  //   messageTemp += (char)message[i];
-  // }
-  // terminal.println();
+payload[length] = '\0';
+String message = (char*)payload;
 
-
-  if (String(topic) == inTopic) 
-  // if (strcmp(topic,state_topic))
+  if (strcmp(topic, "/home/boy_on")==0)
   {
-    if(messageTemp == "ON"){
+    if(message == "ON"){
             eeprom.heat = 1;
-      client.publish(state_topic, "ON");
+      client.publish("/home/boy_on/state", "ON");
       Blynk.virtualWrite(V5,eeprom.heat);
      
       delay(100);
     }
-    if(messageTemp == "OFF"){
+    if(message == "OFF"){
       
-      client.publish(state_topic, "OFF"); 
+      client.publish("/home/boy_on/state", "OFF"); 
       eeprom.heat = 0;
       Blynk.virtualWrite(V5,eeprom.heat);
 
-
-      delay(100);
     }
    
-    if(messageTemp == "KolON"){
+    } else if (strcmp(topic, "/home/heat_on")==0){
+    if(message == "ON"){
             eeprom.heat_otop = 1;
-      client.publish(state_topic, "KolON");
+      client.publish("/home/heat_on/state", "ON");
       Blynk.virtualWrite(V15,eeprom.heat_otop);
-     
-      delay(100);
+           // delay(100);
     }
-    if(messageTemp == "KolOFF"){
-      
-      client.publish(state_topic, "KolOFF"); 
-            eeprom.heat_otop = 0;
+    if(message == "OFF"){
+    client.publish("/home/heat_on/state", "OFF"); 
+      eeprom.heat_otop = 0;
       Blynk.virtualWrite(V15,eeprom.heat_otop);
-      terminal.print(messageTemp);
+      // terminal.print(message);
       // delay(100);
       
     }
-    return;
-  }  else if (String(topic) ==  "/home/boy_on/ustavka/boy"){
-    float temp_boy = messageTemp.toFloat();
+    // return;
+  }  else if (strcmp(topic, "/home/boy_on/ustavka/boy") == 0){
+    float temp_boy = message.toFloat();
     eeprom.temp_u = temp_boy;
     Blynk.virtualWrite(V4,eeprom.temp_u);
     terminal.println(eeprom.temp_u);
   }
-  else {
-      terminal.println("Not working");
-  }
+  
   }
 
   
