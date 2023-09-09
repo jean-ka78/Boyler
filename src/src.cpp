@@ -70,7 +70,7 @@ digitalWrite(relay,relle);
 
 void setup()
 { 
-  setup_mb();
+  // setup_mb();
   setupMqtt();
   Serial.begin(115200);
   pinMode(relay, OUTPUT);
@@ -98,7 +98,7 @@ void setup()
   timer.setInterval(200, regul);
   IDt_debug = timer.setInterval(10000, debug);
   // timer.setInterval(1000, send_json);
-  reconnectBlynk(); 
+  // reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
   ArduinoOTA.begin(); 
 digitalWrite(PIN_LOW,HIGH);
@@ -189,6 +189,13 @@ BLYNK_WRITE(V8) {
 void loop()
 {
   ArduinoOTA.handle(); // Всегда готовы к прошивке
+
+#ifdef USE_LOCAL_SERVER
+
+
+
+
+
   if (Blynk.connected()){ 
    Blynk.run(); 
    
@@ -196,6 +203,8 @@ void loop()
    boolean ok2 = EEPROM.commit();
    isFirstConnection = false;
   }
+#endif 
+
 
   if (isFirstConnection)
   {

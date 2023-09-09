@@ -1,4 +1,4 @@
-#define USE_LOCAL_SERVER
+// #define USE_LOCAL_SERVER
 
 #ifdef USE_LOCAL_SERVER
       // #define SERVER                  IPAddress(192, 168, 1, 14) // Свой IP пишите
@@ -45,10 +45,14 @@ void ConnectBlynk()
         delay(500);
         Serial.print(".");
         Serial.print(WiFi.status());
+        isFirstConnection = false;
+         
         count++;
         if (count >= 5){
-          break;Serial.println("WiFi not connected");}
+
+          Serial.println("WiFi not connected"); break;}
       }
+
     }
   /*  Дисконект - для справки 
     WiFi.disconnect(); // отключаемся от сети
@@ -84,6 +88,7 @@ timer.disable(IDt_reconnectBlynk); // Выключаем таймер
 // Реконектимся если обрыв связи
 void reconnectBlynk() { 
   // terminal.println(WiFi.localIP());
+   #ifdef USE_LOCAL_SERVER 
   if (!Blynk.connected())
   {
     BLYNK_LOG("Disconnected now");
@@ -98,5 +103,5 @@ void reconnectBlynk() {
     }
   
   }
-  
+   #endif
 }//reconnectBlynk()
