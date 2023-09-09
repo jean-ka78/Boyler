@@ -41,7 +41,7 @@ String message = (char*)payload;
       client.publish("/home/boy_on/state", "ON");
       Blynk.virtualWrite(V5,eeprom.heat);
      
-      delay(100);
+      // delay(100);
     }
     if(message == "OFF"){
       
@@ -70,7 +70,7 @@ String message = (char*)payload;
   }  else if (strcmp(topic, "/home/boy_on/ustavka/boy") == 0){
     float temp_boy = message.toFloat();
     eeprom.temp_u = temp_boy;
-    Blynk.virtualWrite(V4,eeprom.temp_u);
+    Blynk.virtualWrite(V2,eeprom.temp_u);
     terminal.println(eeprom.temp_u);
   }
   

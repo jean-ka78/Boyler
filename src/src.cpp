@@ -131,13 +131,13 @@ BLYNK_WRITE(V5) {
    eeprom.heat = param.asInt();
   if (param.asInt())
   {
-    client.publish(state_topic, "ON");
-    // client.publish(inTopic, "ON");
+    client.publish("/home/boy_on/state", "ON");
+    client.publish("/home/boy_on", "ON");
   }
   else
   {
-    client.publish(state_topic, "OFF");
-    // client.publish(inTopic, "OFF");
+    client.publish("/home/boy_on/state", "OFF");
+    client.publish("/home/boy_on", "OFF");
   }
   
 }
@@ -146,13 +146,13 @@ BLYNK_WRITE(V15) {
   eeprom.heat_otop = param.asInt();
   if (param.asInt())
   {
-    client.publish(state_topic, "KolON");
-    // client.publish(inTopic, "ON");
+    client.publish("/home/heat_on/state", "ON");
+    client.publish("/home/heat_on/", "ON");
   }
   else
   {
-    client.publish(state_topic, "KolOFF");
-    // client.publish(inTopic, "OFF");
+    client.publish("/home/heat_on/state", "OFF");
+    client.publish("/home/heat_on/", "OFF");
   }
 }
 
@@ -200,9 +200,10 @@ void loop()
   if (isFirstConnection)
   {
   EEPROM.get(0, eeprom);
-  if (Blynk.connected()){ 
-Blynk.syncAll(); 
-  }
+  // Blynk.syncAll(); 
+  // if (Blynk.connected()){ 
+
+  // }
   }
 
 timer.run();
@@ -234,7 +235,7 @@ timer.run();
     //   temp_in();
     // }
     
-    // if (run_mb)    {
+    if (run_mb)    {
     loopMQtt();
     if (real_time - timer4 > 5000)
     {
@@ -242,7 +243,7 @@ timer.run();
       getValues();
       // loopMQtt();
     }
-    // }
+    }
 
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 Deb_cont();
