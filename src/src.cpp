@@ -98,7 +98,7 @@ void setup()
   timer.setInterval(200, regul);
   IDt_debug = timer.setInterval(10000, debug);
   // timer.setInterval(1000, send_json);
-  // reconnectBlynk(); 
+  reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
   ArduinoOTA.begin(); 
 digitalWrite(PIN_LOW,HIGH);
@@ -215,7 +215,7 @@ void loop()
   // }
   }
 
-timer.run();
+// timer.run();
  rssi =  map(WiFi.RSSI(), -115, -35, 0, 100);
  Blynk.virtualWrite(V11, rssi);
  unsigned long real_time = millis();
@@ -227,11 +227,11 @@ timer.run();
       T_boyler = boyler.Update_f();
       temp_in();
     }
-    // if (real_time - old_time1>2000)
-    // {
-    //   old_time1 = real_time;
-    //   T_bat = bat.Update_f();
-    // }
+    if (real_time - old_time1>2000)
+    {
+      old_time1 = real_time;
+      reconnect();
+    }
     // if (real_time - old_time2>3000)
     // {
     //   old_time2 = real_time;
