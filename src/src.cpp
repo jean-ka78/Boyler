@@ -244,7 +244,7 @@ timer.run();
     //   temp_in();
     // }
     
-    if (run_mb)    {
+    // if (run_mb)    {
     loopMQtt();
     if (real_time - timer4 > 5000)
     {
@@ -252,7 +252,7 @@ timer.run();
       getValues();
       // loopMQtt();
     }
-    }
+    // }
 
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
 Deb_cont();
