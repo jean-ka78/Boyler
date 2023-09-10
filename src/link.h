@@ -26,7 +26,7 @@
 ///////////////////////////////////////////////////////
 //          Функции для подключения к Blynk          //
 
-void ConnectBlynk()
+void ConnectWIFI()
 {
   //*******************************************************
   // Запускаем WiFi
@@ -59,10 +59,13 @@ void ConnectBlynk()
     
   */
  Serial.println(WiFi.localIP());
-   terminal.println(WiFi.localIP());
+  //  terminal.println(WiFi.localIP());
   //*******************************************************
   // Запускаем Blynk
+#ifdef USE_LOAL_SERVER
 timer.disable(IDt_reconnectBlynk); // Выключаем таймер
+#endif
+
   
   if (WiFi.status() == WL_CONNECTED)// Если нет WiFi, то не коннектимся
     {
@@ -80,8 +83,10 @@ timer.disable(IDt_reconnectBlynk); // Выключаем таймер
   // До бесконечности будем оставаться в цикле while
   // пока не установим связь с сервером
   //  while (Blynk.connect() == false) {}
+#ifdef USE_LOCAL_SERVER 
   timer.enable(IDt_reconnectBlynk); // Включаем таймер
   timer.restartTimer(IDt_reconnectBlynk); // Перезапускаем таймер
+#endif
 }//ConnectBlynk()
 
 

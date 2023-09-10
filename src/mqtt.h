@@ -149,7 +149,7 @@ void reconnect() {
 // 
  if (WiFi.status() != WL_CONNECTED){
 
-ConnectBlynk();
+ConnectWIFI();
   }
   if (!client.connected()) {
     Serial.print("Attempting MQTT connection...");

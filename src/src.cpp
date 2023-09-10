@@ -217,7 +217,7 @@ void loop()
       T_koll = kollektor.Update_f();
       T_bat = bat.Update_f();
       T_boyler = boyler.Update_f();
-      temp_in();
+      // temp_in();
     }
     if (real_time - old_time1>2000)
     {
