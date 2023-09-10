@@ -42,9 +42,6 @@ NTC boyler(thermistorPin2);
 NTC bat(thermistorPin3);
 #include "heat_regul.h"
 #include "obogrev.h"
-
-
-// #include "json.h"
 #include "mqtt.h"
 void temp_in()
 {
@@ -93,18 +90,18 @@ void setup()
   // ---------------------------------------
 
    boolean ok2 = EEPROM.commit();
-   terminal.println((ok2) ? "Commit OK" : "Commit failed");  
-  IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
-  timer.setInterval(200, regul);
-  IDt_debug = timer.setInterval(10000, debug);
+  //  terminal.println((ok2) ? "Commit OK" : "Commit failed");  
+  // IDt_reconnectBlynk = timer.setInterval(10000, reconnectBlynk);
+  // timer.setInterval(200, regul);
+  // IDt_debug = timer.setInterval(10000, debug);
   // timer.setInterval(1000, send_json);
-  reconnectBlynk(); 
+  // reconnectBlynk(); 
   ArduinoOTA.setHostname("ESP32"); // Задаем имя сетевого порта
   ArduinoOTA.begin(); 
-digitalWrite(PIN_LOW,HIGH);
-digitalWrite(PIN_HIGH,HIGH);
-digitalWrite(relay,LOW);
-digitalWrite(nasos_otop, LOW);
+  digitalWrite(PIN_LOW,HIGH);
+  digitalWrite(PIN_HIGH,HIGH);
+  digitalWrite(relay,LOW);
+  digitalWrite(nasos_otop, LOW);
 }
 
 
@@ -191,11 +188,6 @@ void loop()
   ArduinoOTA.handle(); // Всегда готовы к прошивке
 
 #ifdef USE_LOCAL_SERVER
-
-
-
-
-
   if (Blynk.connected()){ 
    Blynk.run(); 
    
@@ -232,20 +224,21 @@ void loop()
       old_time1 = real_time;
       reconnect();
     }
-    // if (real_time - old_time2>3000)
-    // {
-    //   old_time2 = real_time;
-    //   T_boyler = boyler.Update_f();
-    // }
+    loopMQtt();
+    if (real_time - old_time2>300)
+    {
+      old_time2 = real_time;
+      regul();
+    }
 
-    // if (real_time - old_time3 > 1000)
-    // {
-    //   old_time3 = real_time;
-    //   temp_in();
-    // }
+    if (real_time - old_time3 > 1000)
+    {
+      old_time3 = real_time;
+      
+    }
     
     // if (run_mb)    {
-    loopMQtt();
+    
     if (real_time - timer4 > 5000)
     {
       timer4 = real_time;
@@ -255,6 +248,6 @@ void loop()
     // }
 
   regulator(T_koll, eeprom.temp_u_b, T_bat, eeprom.temp_off_otop);
-Deb_cont();
+// Deb_cont();
 
 }
