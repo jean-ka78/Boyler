@@ -48,6 +48,7 @@ void temp_in()
    Blynk.virtualWrite(V0, kollektor.Update_f());
    Blynk.virtualWrite(V1, boyler.Update_f());
    Blynk.virtualWrite(V3, bat.Update_f());
+   Blynk.virtualWrite(V11, rssi);
 }
 
 void regul()
@@ -209,7 +210,7 @@ void loop()
 
 // timer.run();
  rssi =  map(WiFi.RSSI(), -115, -35, 0, 100);
- Blynk.virtualWrite(V11, rssi);
+//  
  unsigned long real_time = millis();
   if (real_time - old_time>1000)
     {
