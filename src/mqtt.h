@@ -127,26 +127,11 @@ String message = (char*)payload;
     Serial.println("temp_off Otopl: "+String(eeprom.temp_off_otop));
   }
 
-
-
 }
-
-  
 
                                                // подключение к mqtt брокеру            
 void reconnect() {                                                      
 
-// unsigned long ms=millis();
-//    if(ms - oldmillis > 1000) {
-//     oldmillis = ms;   
-//                                                         // подключаемся, в client.connect передаем ID, логин и пасс
-//     if (client.connect("arduinoClient", mqtt_user, mqtt_pass)) {
-//      client.subscribe(inTopic);
-//     //  client.subscribe(inKol);
-      
-//     } 
-//    }
-// 
  if (WiFi.status() != WL_CONNECTED){
 
 ConnectWIFI();
@@ -154,11 +139,11 @@ ConnectWIFI();
   if (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Create a random client ID
-    String clientId = "ESP8266Client-";
-    clientId += String(random(0xffff), HEX);
+    // String clientId = "ESP8266Client-";
+    // clientId += String(random(0xffff), HEX);
     // Attempt to connect
     client.setServer(mqtt_server, 1883);
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+    if (client.connect("arduinoClient", mqtt_user, mqtt_pass)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
       // client.publish("outTopic", "hello world");
